@@ -8,6 +8,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 from schema import Program, ConversationResponse
 from dsl_generator import generate_dsl, validate_program
+from grammar_validator import validate_and_explain
 
 
 # Load environment variables
@@ -157,19 +158,42 @@ Optional fields:
 
         return messages
 
-    def chat(self, user_message: str) -> ConversationResponse:
-        """Send a message and get a structured response."""
+    def chat(self, user_message: str, max_retries: int = 2) -> ConversationResponse:
+        """Send a message and get a structured response with grammar validation."""
         messages = self._build_messages(user_message)
 
-        # Call OpenAI with structured output
-        completion = self.client.beta.chat.completions.parse(
-            model=self.model,
-            messages=messages,
-            response_format=ConversationResponse,
-            temperature=0.7,
-        )
+        # Try up to max_retries times if grammar validation fails
+        for attempt in range(max_retries + 1):
+            # Call OpenAI with structured output
+            completion = self.client.beta.chat.completions.parse(
+                model=self.model,
+                messages=messages,
+                response_format=ConversationResponse,
+                temperature=0.7,
+            )
 
-        response = completion.choices[0].message.parsed
+            response = completion.choices[0].message.parsed
+
+            # If there's a program, validate it against grammar rules
+            if response.program:
+                is_valid, validation_message = validate_and_explain(response.program)
+
+                if not is_valid and attempt < max_retries:
+                    # Grammar validation failed - retry with error feedback
+                    correction_prompt = (
+                        f"The generated program has grammar errors:\n\n{validation_message}\n\n"
+                        f"Please fix these errors and generate a corrected version."
+                    )
+                    messages.append({"role": "assistant", "content": json.dumps(response.model_dump())})
+                    messages.append({"role": "user", "content": correction_prompt})
+                    continue  # Retry
+
+                elif not is_valid:
+                    # Max retries reached - append validation errors to message
+                    response.message += f"\n\n⚠️  Warning: Generated code has validation issues:\n{validation_message}"
+
+            # Success or max retries reached
+            break
 
         # Update conversation history
         self.conversation_history.append({"role": "user", "content": user_message})

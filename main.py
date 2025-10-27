@@ -11,6 +11,7 @@ from rich.syntax import Syntax
 from rich.prompt import Prompt, Confirm
 from rich.text import Text
 from agent import DSLAgent
+from grammar_validator import validate_and_explain
 
 
 console = Console()
@@ -120,24 +121,38 @@ def find_parser():
 
 
 def validate_code(agent: DSLAgent):
-    """Validate current code with Rust parser."""
-    code = agent.generate_code()
-    if not code:
+    """Validate current code with grammar rules and Rust parser."""
+    if not agent.current_program:
         console.print("[yellow]No code to validate. Generate some DSL code first![/yellow]")
         return
 
+    # Step 1: Grammar validation
+    console.print("[cyan]Step 1: Grammar validation[/cyan]")
+    is_valid, message = validate_and_explain(agent.current_program)
+
+    if is_valid:
+        console.print(f"[green]{message}[/green]")
+    else:
+        console.print(f"[red]{message}[/red]")
+        return  # Don't proceed to Rust parser if grammar validation fails
+
+    # Step 2: Generate code
+    code = agent.generate_code()
     if "Validation errors" in code:
         console.print(f"[red]{code}[/red]")
         return
 
+    # Step 3: Rust parser validation (optional)
     parser_path = find_parser()
     if not parser_path:
+        console.print("\n[cyan]Step 2: Rust parser validation[/cyan]")
         console.print("[yellow]Rust parser not found. Build it first:[/yellow]")
         console.print("  cd ../container-lang && cargo build --release")
-        console.print("\n[cyan]Showing code without parser validation:[/cyan]")
+        console.print("\n[cyan]Showing grammar-validated code:[/cyan]")
         display_code(code)
         return
 
+    console.print("\n[cyan]Step 2: Rust parser validation[/cyan]")
     is_valid, message = agent.validate_with_parser(code, parser_path)
 
     if is_valid:

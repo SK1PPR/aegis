@@ -6,8 +6,9 @@ A terminal-based conversational AI agent that converts natural language descript
 
 - **Conversational Interface**: Chat naturally about your infrastructure needs
 - **Intelligent Code Generation**: Uses OpenAI's structured output for reliable DSL generation
+- **Grammar Validation**: Automatic validation against DSL grammar rules with auto-correction
 - **Interactive Refinement**: Iterate on your design through back-and-forth conversation
-- **Validation**: Integrates with the Rust parser to validate generated code
+- **Multi-Layer Validation**: Grammar rules + optional Rust parser validation
 - **Rich Terminal UI**: Beautiful syntax highlighting and formatting
 
 ## Prerequisites
@@ -128,9 +129,11 @@ Agent: [Displays updated code]
 
 1. **Natural Language Processing**: Uses OpenAI GPT-4 with structured outputs
 2. **Schema Validation**: Pydantic models ensure type safety
-3. **Code Generation**: Template-based DSL code generation from validated JSON
-4. **Parser Validation**: (Optional) Validates against the actual Rust parser
-5. **Conversation Context**: Maintains full conversation history for iterative refinement
+3. **Grammar Validation**: Validates against DSL grammar rules (identifiers, ports, volumes, etc.)
+4. **Auto-Correction**: LLM automatically fixes validation errors (up to 2 retries)
+5. **Code Generation**: Template-based DSL code generation from validated JSON
+6. **Parser Validation**: (Optional) Validates against the actual Rust parser
+7. **Conversation Context**: Maintains full conversation history for iterative refinement
 
 ## Architecture
 
@@ -139,7 +142,10 @@ Natural Language Input
        ↓
 OpenAI API (Structured Output)
        ↓
-Pydantic Schema Validation
+Pydantic Schema Validation (types)
+       ↓
+Grammar Validation (syntax rules)
+       ↓  ← Auto-retry if invalid (up to 2x)
        ↓
 DSL Code Generator
        ↓
@@ -152,13 +158,17 @@ Final DSL Code
 
 ```
 nl2dsl-agent/
-├── main.py              # CLI interface
-├── agent.py             # Core conversational agent
-├── schema.py            # Pydantic schemas
-├── dsl_generator.py     # DSL code generation
-├── requirements.txt     # Python dependencies
-├── .env.example         # Environment variables template
-└── README.md            # This file
+├── main.py                  # CLI interface
+├── agent.py                 # Core conversational agent
+├── schema.py                # Pydantic schemas
+├── grammar_validator.py     # Grammar validation rules
+├── dsl_generator.py         # DSL code generation
+├── test_grammar.py          # Grammar validation tests
+├── requirements.txt         # Python dependencies
+├── .env.example             # Environment variables template
+├── README.md                # This file
+├── SETUP.md                 # Quick setup guide
+└── GRAMMAR_VALIDATION.md    # Grammar validation documentation
 ```
 
 ## Tips for Best Results
