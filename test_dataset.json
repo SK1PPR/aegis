@@ -2,16 +2,16 @@
   "metadata": {
     "total_cases": 28,
     "categories": [
-      "real_world",
+      "database",
+      "multi_service",
       "edge_case",
       "complex",
-      "database",
       "basic_web",
-      "multi_service"
+      "real_world"
     ],
     "complexity_levels": [
-      "simple",
       "medium",
+      "simple",
       "complex"
     ]
   },

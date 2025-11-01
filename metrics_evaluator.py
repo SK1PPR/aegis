@@ -172,19 +172,19 @@ class MetricsEvaluator:
         """Validate DSL code with Rust parser."""
         if not self.parser_path:
             return False, "Parser not available"
-        
+
         try:
             temp_file = "/tmp/eval_dsl.container"
             with open(temp_file, "w") as f:
                 f.write(dsl_code)
-            
+
             result = subprocess.run(
-                [self.parser_path, temp_file],
+                [self.parser_path, "--plan", temp_file],
                 capture_output=True,
                 text=True,
                 timeout=5
             )
-            
+
             if result.returncode == 0:
                 return True, "Valid"
             else:
