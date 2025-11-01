@@ -1,0 +1,11 @@
+{
+  "total_tests": 28,
+  "validity_percentage": 0.0,
+  "grammar_pass_rate": 100.0,
+  "parser_pass_rate": 0.0,
+  "completeness_percentage": 78.27,
+  "extensibility_percentage": 100.0,
+  "avg_latency_seconds": 4.829,
+  "median_latency_seconds": 3.591,
+  "p95_latency_seconds": 9.988
+}
