@@ -1,0 +1,9 @@
+Metric,Conversational_Agent,Plain_LLM,Template_Based,Grammar_CFG,Best_Approach
+Validity_%,89.290,0.000,0.000,0.000,Conversational
+Grammar_Pass_%,100.000,100.000,78.570,92.860,Conversational+Plain_LLM
+Parser_Pass_%,89.290,0.000,0.000,0.000,Conversational
+Completeness_%,82.290,80.800,96.480,90.140,Template
+Extensibility_%,100.000,100.000,76.470,88.240,Conversational+Plain_LLM
+Avg_Latency_s,2.991,1.109,0.002,0.003,Template
+Median_Latency_s,2.742,1.140,0.002,0.003,Template
+P95_Latency_s,6.403,1.638,0.005,0.007,Template

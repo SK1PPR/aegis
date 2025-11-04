@@ -1,0 +1,13 @@
+{
+  "approach": "Plain LLM (Single-Shot)",
+  "model": "gpt-4o-2024-08-06",
+  "total_tests": 28,
+  "validity_percentage": 0.0,
+  "grammar_pass_rate": 100.0,
+  "parser_pass_rate": 0.0,
+  "completeness_percentage": 80.36,
+  "extensibility_percentage": 100.0,
+  "avg_latency_seconds": 1.246,
+  "median_latency_seconds": 1.126,
+  "p95_latency_seconds": 1.638
+}

@@ -1,0 +1,13 @@
+{
+  "approach": "Grammar-Based (CFG + Lark)",
+  "total_tests": 28,
+  "validity_percentage": 0.0,
+  "grammar_pass_rate": 92.86,
+  "parser_pass_rate": 0.0,
+  "lark_pass_rate": 100.0,
+  "completeness_percentage": 90.14,
+  "extensibility_percentage": 88.24,
+  "avg_latency_seconds": 0.002,
+  "median_latency_seconds": 0.002,
+  "p95_latency_seconds": 0.005
+}
