@@ -182,19 +182,19 @@ class GrammarEvaluator:
         """Validate with Rust parser."""
         if not self.parser_path:
             return False, "Parser not available"
-        
+
         try:
             temp_file = "/tmp/grammar_eval.container"
             with open(temp_file, "w") as f:
                 f.write(dsl_code)
-            
+
             result = subprocess.run(
-                [self.parser_path, temp_file],
+                [self.parser_path, "--plan", temp_file],
                 capture_output=True,
                 text=True,
                 timeout=5
             )
-            
+
             return result.returncode == 0, result.stderr if result.returncode != 0 else "Valid"
         except Exception as e:
             return False, str(e)

@@ -1,72 +1,72 @@
 {
   "total_tests": 28,
-  "validity_percentage": 89.28571428571429,
+  "validity_percentage": 85.71428571428571,
   "grammar_pass_rate": 100.0,
-  "parser_pass_rate": 89.28571428571429,
-  "completeness_percentage": 82.29166666666667,
-  "avg_service_coverage": 82.29166666666667,
-  "avg_attribute_coverage": 82.29166666666667,
+  "parser_pass_rate": 85.71428571428571,
+  "completeness_percentage": 80.95238095238095,
+  "avg_service_coverage": 80.95238095238095,
+  "avg_attribute_coverage": 80.95238095238095,
   "extensibility_percentage": 100.0,
-  "avg_latency": 2.9911960533687045,
-  "median_latency": 2.7416560649871826,
-  "p95_latency": 6.402698278427124,
-  "p99_latency": 6.4030656814575195,
+  "avg_latency": 4.423103153705597,
+  "median_latency": 3.7199409008026123,
+  "p95_latency": 8.628296375274658,
+  "p99_latency": 8.640676259994507,
   "by_category": {
-    "database": {
-      "total": 6,
+    "real_world": {
+      "total": 5,
       "grammar_pass_rate": 100.0,
-      "completeness": 83.33333333333334,
-      "avg_latency": 2.7280291318893433
+      "completeness": 86.66666666666666,
+      "avg_latency": 4.661211967468262
     },
     "multi_service": {
       "total": 4,
       "grammar_pass_rate": 100.0,
-      "completeness": 93.75,
-      "avg_latency": 3.47756689786911
+      "completeness": 90.625,
+      "avg_latency": 5.741792559623718
     },
     "edge_case": {
       "total": 5,
       "grammar_pass_rate": 100.0,
       "completeness": 60.0,
-      "avg_latency": 3.5036768436431887
+      "avg_latency": 4.755904674530029
+    },
+    "database": {
+      "total": 6,
+      "grammar_pass_rate": 100.0,
+      "completeness": 97.91666666666666,
+      "avg_latency": 3.175548473993937
+    },
+    "basic_web": {
+      "total": 5,
+      "grammar_pass_rate": 100.0,
+      "completeness": 60.0,
+      "avg_latency": 4.01183123588562
     },
     "complex": {
       "total": 3,
       "grammar_pass_rate": 100.0,
       "completeness": 94.44444444444443,
-      "avg_latency": 2.945622762044271
-    },
-    "basic_web": {
-      "total": 5,
-      "grammar_pass_rate": 100.0,
-      "completeness": 80.0,
-      "avg_latency": 2.1513684749603272
-    },
-    "real_world": {
-      "total": 5,
-      "grammar_pass_rate": 100.0,
-      "completeness": 89.16666666666666,
-      "avg_latency": 3.272590446472168
+      "avg_latency": 4.893895943959554
     }
   },
   "by_complexity": {
     "medium": {
       "total": 10,
       "grammar_pass_rate": 100.0,
-      "completeness": 70.0,
-      "avg_latency": 2.5413561820983888
+      "completeness": 68.75,
+      "avg_latency": 3.929900074005127
+    },
+    "complex": {
+      "total": 12,
+      "grammar_pass_rate": 100.0,
+      "completeness": 89.93055555555554,
+      "avg_latency": 5.009788751602173
     },
     "simple": {
       "total": 6,
       "grammar_pass_rate": 100.0,
       "completeness": 83.33333333333334,
-      "avg_latency": 3.1556031306584678
-    },
-    "complex": {
-      "total": 12,
-      "grammar_pass_rate": 100.0,
-      "completeness": 92.01388888888889,
-      "avg_latency": 3.283859074115753
+      "avg_latency": 4.071737090746562
     }
   },
   "test_results": [
@@ -109,7 +109,7 @@
         ]
       },
       "completeness_score": 1.0,
-      "generation_time": 2.971600294113159,
+      "generation_time": 8.10071611404419,
       "generated_code": "service web {\n  image \"nginx:latest\"\n  replicas 1\n  ports 80:80\n}\n\nservice db {\n  image \"postgres:16\"\n  replicas 1\n  ports 5432:5432\n  env POSTGRES_USER=admin, POSTGRES_PASSWORD=secret\n}\n\nservice cache {\n  image \"redis:7\"\n  replicas 1\n  ports 6379:6379\n}\n"
     },
     {
@@ -140,7 +140,7 @@
         ]
       },
       "completeness_score": 0.0,
-      "generation_time": 1.4068620204925537,
+      "generation_time": 2.596747875213623,
       "generated_code": "service apache-web {\n  image \"httpd:latest\"\n  replicas 1\n  ports 8080:80\n}\n"
     },
     {
@@ -153,9 +153,7 @@
       "grammar_errors": "",
       "parser_errors": "",
       "services_generated": [
-        "web",
-        "db",
-        "cache"
+        "web"
       ],
       "services_expected": [
         "web"
@@ -164,15 +162,6 @@
         "web": [
           "image",
           "replicas",
-          "ports"
-        ],
-        "db": [
-          "image",
-          "ports",
-          "env"
-        ],
-        "cache": [
-          "image",
           "ports"
         ]
       },
@@ -184,8 +173,8 @@
         ]
       },
       "completeness_score": 1.0,
-      "generation_time": 2.129072904586792,
-      "generated_code": "service web {\n  image \"nginx:latest\"\n  replicas 3\n  ports 80:80,443:443\n}\n\nservice db {\n  image \"postgres:16\"\n  replicas 1\n  ports 5432:5432\n  env POSTGRES_USER=admin, POSTGRES_PASSWORD=secret\n}\n\nservice cache {\n  image \"redis:7\"\n  replicas 1\n  ports 6379:6379\n}\n"
+      "generation_time": 2.3319973945617676,
+      "generated_code": "service web {\n  image \"nginx:latest\"\n  replicas 3\n  ports 80:80,443:443\n}\n"
     },
     {
       "test_id": "web_004",
@@ -197,13 +186,13 @@
       "grammar_errors": "",
       "parser_errors": "",
       "services_generated": [
-        "web"
+        "caddy"
       ],
       "services_expected": [
         "web"
       ],
       "attributes_generated": {
-        "web": [
+        "caddy": [
           "image",
           "ports",
           "volumes"
@@ -216,9 +205,9 @@
           "volumes"
         ]
       },
-      "completeness_score": 1.0,
-      "generation_time": 1.6366961002349854,
-      "generated_code": "service web {\n  image \"caddy:latest\"\n  replicas 1\n  ports 80:80\n  volumes \"/data/web:/usr/share/caddy\"\n}\n"
+      "completeness_score": 0.0,
+      "generation_time": 3.1498019695281982,
+      "generated_code": "service caddy {\n  image \"caddy:latest\"\n  replicas 1\n  ports 80:80\n  volumes \"/data/web:/usr/share/caddy\"\n}\n"
     },
     {
       "test_id": "web_005",
@@ -260,7 +249,7 @@
         ]
       },
       "completeness_score": 1.0,
-      "generation_time": 2.6126110553741455,
+      "generation_time": 3.8798928260803223,
       "generated_code": "service web {\n  image \"nginx:latest\"\n  replicas 1\n  ports 80:80\n  env NGINX_HOST=example.com, NGINX_PORT=80\n}\n\nservice db {\n  image \"postgres:16\"\n  replicas 1\n  ports 5432:5432\n  env POSTGRES_USER=admin, POSTGRES_PASSWORD=secret\n}\n\nservice cache {\n  image \"redis:7\"\n  replicas 1\n  ports 6379:6379\n}\n"
     },
     {
@@ -291,7 +280,7 @@
         ]
       },
       "completeness_score": 1.0,
-      "generation_time": 4.777329683303833,
+      "generation_time": 6.351136684417725,
       "generated_code": "service db {\n  image \"postgres:16\"\n  replicas 1\n  ports 5432:5432\n}\n"
     },
     {
@@ -323,7 +312,7 @@
         ]
       },
       "completeness_score": 1.0,
-      "generation_time": 1.3985626697540283,
+      "generation_time": 2.074141263961792,
       "generated_code": "service db {\n  image \"postgres:16\"\n  replicas 1\n  ports 5432:5432\n  env POSTGRES_USER=admin, POSTGRES_PASSWORD=secret123, POSTGRES_DB=myapp\n}\n"
     },
     {
@@ -358,7 +347,7 @@
         ]
       },
       "completeness_score": 1.0,
-      "generation_time": 2.15942120552063,
+      "generation_time": 2.509428024291992,
       "generated_code": "service db {\n  image \"mysql:latest\"\n  replicas 1\n  ports 3306:3306\n  env MYSQL_ROOT_PASSWORD=mysecret\n  volumes \"/data/mysql:/var/lib/mysql\"\n}\n"
     },
     {
@@ -371,23 +360,12 @@
       "grammar_errors": "",
       "parser_errors": "",
       "services_generated": [
-        "web",
-        "db",
         "cache"
       ],
       "services_expected": [
         "cache"
       ],
       "attributes_generated": {
-        "web": [
-          "image",
-          "ports"
-        ],
-        "db": [
-          "image",
-          "ports",
-          "env"
-        ],
         "cache": [
           "image",
           "ports"
@@ -400,8 +378,8 @@
         ]
       },
       "completeness_score": 1.0,
-      "generation_time": 4.69770073890686,
-      "generated_code": "service web {\n  image \"nginx:latest\"\n  replicas 1\n  ports 80:80\n}\n\nservice db {\n  image \"postgres:16\"\n  replicas 1\n  ports 5432:5432\n  env POSTGRES_USER=admin, POSTGRES_PASSWORD=secret\n}\n\nservice cache {\n  image \"redis:7\"\n  replicas 1\n  ports 6379:6379\n}\n"
+      "generation_time": 2.4814200401306152,
+      "generated_code": "service cache {\n  image \"redis:7\"\n  replicas 1\n  ports 6379:6379\n}\n"
     },
     {
       "test_id": "db_005",
@@ -413,13 +391,24 @@
       "grammar_errors": "",
       "parser_errors": "",
       "services_generated": [
-        "mongodb"
+        "db",
+        "cache",
+        "mongo"
       ],
       "services_expected": [
         "db"
       ],
       "attributes_generated": {
-        "mongodb": [
+        "db": [
+          "image",
+          "ports",
+          "env"
+        ],
+        "cache": [
+          "image",
+          "ports"
+        ],
+        "mongo": [
           "image",
           "ports",
           "env",
@@ -434,9 +423,9 @@
           "volumes"
         ]
       },
-      "completeness_score": 0.0,
-      "generation_time": 1.4142858982086182,
-      "generated_code": "service mongodb {\n  image \"mongo:latest\"\n  replicas 1\n  ports 27017:27017\n  env MONGO_INITDB_ROOT_USERNAME=mongouser, MONGO_INITDB_ROOT_PASSWORD=mongopass\n  volumes \"/data/mongodb:/data/db\"\n}\n"
+      "completeness_score": 0.875,
+      "generation_time": 3.6069798469543457,
+      "generated_code": "service db {\n  image \"postgres:16\"\n  replicas 1\n  ports 5432:5432\n  env POSTGRES_USER=admin, POSTGRES_PASSWORD=secret\n}\n\nservice cache {\n  image \"redis:7\"\n  replicas 1\n  ports 6379:6379\n}\n\nservice mongo {\n  image \"mongo:latest\"\n  replicas 1\n  ports 27017:27017\n  env MONGO_INITDB_ROOT_USERNAME=mongouser, MONGO_INITDB_ROOT_PASSWORD=mongopass\n  volumes \"/data/db:/data/db\"\n}\n"
     },
     {
       "test_id": "db_006",
@@ -472,7 +461,7 @@
         ]
       },
       "completeness_score": 1.0,
-      "generation_time": 1.9208745956420898,
+      "generation_time": 2.0301849842071533,
       "generated_code": "service db {\n  image \"postgres:16\"\n  replicas 3\n  ports 5432:5432\n  env POSTGRES_USER=admin, POSTGRES_PASSWORD=secret\n  volumes \"/pgdata:/var/lib/postgresql/data\"\n}\n"
     },
     {
@@ -514,7 +503,7 @@
         ]
       },
       "completeness_score": 1.0,
-      "generation_time": 1.6246538162231445,
+      "generation_time": 2.867637872695923,
       "generated_code": "service web {\n  image \"nginx:latest\"\n  replicas 1\n  ports 80:80\n}\n\nservice db {\n  image \"postgres:16\"\n  replicas 1\n  ports 5432:5432\n  env POSTGRES_USER=admin, POSTGRES_PASSWORD=secret\n}\n"
     },
     {
@@ -567,7 +556,7 @@
         ]
       },
       "completeness_score": 1.0,
-      "generation_time": 2.1910390853881836,
+      "generation_time": 4.975128889083862,
       "generated_code": "service web {\n  image \"nginx:latest\"\n  replicas 1\n  ports 80:80\n}\n\nservice db {\n  image \"postgres:16\"\n  replicas 1\n  ports 5432:5432\n  env POSTGRES_USER=admin, POSTGRES_PASSWORD=secret\n}\n\nservice cache {\n  image \"redis:7\"\n  replicas 1\n  ports 6379:6379\n}\n"
     },
     {
@@ -620,7 +609,7 @@
         ]
       },
       "completeness_score": 1.0,
-      "generation_time": 3.6915090084075928,
+      "generation_time": 6.49610710144043,
       "generated_code": "service api {\n  image \"node:18\"\n  replicas 1\n  ports 3000:3000\n}\n\nservice db {\n  image \"postgres:16\"\n  replicas 1\n  ports 5432:5432\n  env POSTGRES_USER=admin, POSTGRES_PASSWORD=secret\n}\n\nservice proxy {\n  image \"nginx:latest\"\n  replicas 1\n  ports 80:80\n}\n"
     },
     {
@@ -634,9 +623,9 @@
       "parser_errors": "",
       "services_generated": [
         "api",
-        "mysql",
-        "cache",
-        "load-balancer"
+        "mysql-db",
+        "redis-cache",
+        "nginx"
       ],
       "services_expected": [
         "api",
@@ -649,16 +638,16 @@
           "image",
           "ports"
         ],
-        "mysql": [
+        "mysql-db": [
           "image",
           "ports",
           "env"
         ],
-        "cache": [
+        "redis-cache": [
           "image",
           "ports"
         ],
-        "load-balancer": [
+        "nginx": [
           "image",
           "replicas",
           "ports"
@@ -683,9 +672,9 @@
           "replicas"
         ]
       },
-      "completeness_score": 0.75,
-      "generation_time": 6.4030656814575195,
-      "generated_code": "service api {\n  image \"python:3.11\"\n  replicas 1\n  ports 8000:8000\n}\n\nservice mysql {\n  image \"mysql:8\"\n  replicas 1\n  ports 3306:3306\n  env MYSQL_ROOT_PASSWORD=your_password\n}\n\nservice cache {\n  image \"redis:7\"\n  replicas 1\n  ports 6379:6379\n}\n\nservice load-balancer {\n  image \"nginx:latest\"\n  replicas 2\n  ports 80:80\n}\n"
+      "completeness_score": 0.625,
+      "generation_time": 8.628296375274658,
+      "generated_code": "service api {\n  image \"python:3.11\"\n  replicas 1\n  ports 8000:8000\n}\n\nservice mysql-db {\n  image \"mysql:8\"\n  replicas 1\n  ports 3306:3306\n  env MYSQL_ROOT_PASSWORD=secret\n}\n\nservice redis-cache {\n  image \"redis:7\"\n  replicas 1\n  ports 6379:6379\n}\n\nservice nginx {\n  image \"nginx:latest\"\n  replicas 2\n  ports 80:80\n}\n"
     },
     {
       "test_id": "complex_001",
@@ -733,8 +722,8 @@
         ]
       },
       "completeness_score": 1.0,
-      "generation_time": 2.7416560649871826,
-      "generated_code": "service wordpress {\n  image \"wordpress:latest\"\n  replicas 1\n  ports 80:80\n  env WORDPRESS_DB_HOST=db:3306, WORDPRESS_DB_USER=wpuser, WORDPRESS_DB_PASSWORD=wppass, WORDPRESS_DB_NAME=wordpress\n  volumes \"/var/lib/wordpress:/var/www/html\"\n}\n\nservice db {\n  image \"mysql:latest\"\n  replicas 1\n  ports 3306:3306\n  env MYSQL_ROOT_PASSWORD=rootpass, MYSQL_DATABASE=wordpress, MYSQL_USER=wpuser, MYSQL_PASSWORD=wppass\n  volumes \"/var/lib/mysql:/var/lib/mysql\"\n}\n"
+      "generation_time": 3.4102299213409424,
+      "generated_code": "service wordpress {\n  image \"wordpress:latest\"\n  replicas 1\n  ports 80:80\n  env WORDPRESS_DB_HOST=db:3306, WORDPRESS_DB_USER=wpuser, WORDPRESS_DB_PASSWORD=wppass, WORDPRESS_DB_NAME=wordpress\n  volumes \"/var/www/html:/var/www/html\"\n}\n\nservice db {\n  image \"mysql:latest\"\n  replicas 1\n  ports 3306:3306\n  env MYSQL_ROOT_PASSWORD=rootpass, MYSQL_DATABASE=wordpress, MYSQL_USER=wpuser, MYSQL_PASSWORD=wppass\n  volumes \"/var/lib/mysql:/var/lib/mysql\"\n}\n"
     },
     {
       "test_id": "complex_002",
@@ -788,7 +777,7 @@
         ]
       },
       "completeness_score": 0.8333333333333333,
-      "generation_time": 1.7217402458190918,
+      "generation_time": 3.7199409008026123,
       "generated_code": "service prometheus {\n  image \"prom/prometheus:latest\"\n  replicas 1\n  ports 9090:9090\n  volumes \"/data/prometheus:/prometheus\"\n}\n\nservice grafana {\n  image \"grafana/grafana:latest\"\n  replicas 1\n  ports 3000:3000\n  env GF_SECURITY_ADMIN_PASSWORD=admin\n}\n\nservice node-exporter {\n  image \"prom/node-exporter:latest\"\n  replicas 1\n  ports 9100:9100\n}\n"
     },
     {
@@ -842,8 +831,8 @@
         ]
       },
       "completeness_score": 1.0,
-      "generation_time": 4.373471975326538,
-      "generated_code": "service elasticsearch {\n  image \"elasticsearch:7.10.0\"\n  replicas 1\n  ports 9200:9200\n  env DISCOVERY_TYPE=single-node\n  volumes \"/data/es:/usr/share/elasticsearch/data\"\n}\n\nservice logstash {\n  image \"logstash:7.10.0\"\n  replicas 1\n  ports 5000:5000\n}\n\nservice kibana {\n  image \"kibana:7.10.0\"\n  replicas 1\n  ports 5601:5601\n}\n"
+      "generation_time": 7.551517009735107,
+      "generated_code": "service elasticsearch {\n  image \"docker.elastic.co/elasticsearch/elasticsearch:8.5.0\"\n  replicas 1\n  ports 9200:9200\n  env DISCOVERY_TYPE=single-node\n  volumes \"/data/es:/usr/share/elasticsearch/data\"\n}\n\nservice logstash {\n  image \"docker.elastic.co/logstash/logstash:8.5.0\"\n  replicas 1\n  ports 5000:5000\n}\n\nservice kibana {\n  image \"docker.elastic.co/kibana/kibana:8.5.0\"\n  replicas 1\n  ports 5601:5601\n}\n"
     },
     {
       "test_id": "edge_001",
@@ -872,7 +861,7 @@
         ]
       },
       "completeness_score": 1.0,
-      "generation_time": 1.8246169090270996,
+      "generation_time": 2.518281936645508,
       "generated_code": "service web {\n  image \"nginx:latest\"\n  replicas 1\n  ports 80:80\n}\n"
     },
     {
@@ -885,27 +874,15 @@
       "grammar_errors": "",
       "parser_errors": "",
       "services_generated": [
-        "web",
-        "db",
-        "cache"
+        "generic-service"
       ],
       "services_expected": [
         "service"
       ],
       "attributes_generated": {
-        "web": [
+        "generic-service": [
           "image",
-          "replicas",
-          "ports"
-        ],
-        "db": [
-          "image",
-          "ports",
-          "env"
-        ],
-        "cache": [
-          "image",
-          "ports"
+          "replicas"
         ]
       },
       "attributes_expected": {
@@ -915,8 +892,8 @@
         ]
       },
       "completeness_score": 0.0,
-      "generation_time": 4.1058349609375,
-      "generated_code": "service web {\n  image \"nginx:latest\"\n  replicas 5\n  ports 80:80\n}\n\nservice db {\n  image \"postgres:16\"\n  replicas 1\n  ports 5432:5432\n  env POSTGRES_USER=admin, POSTGRES_PASSWORD=secret\n}\n\nservice cache {\n  image \"redis:7\"\n  replicas 1\n  ports 6379:6379\n}\n"
+      "generation_time": 8.416202545166016,
+      "generated_code": "service generic-service {\n  image \"your-image:latest\"\n  replicas 5\n}\n"
     },
     {
       "test_id": "edge_003",
@@ -946,7 +923,7 @@
         ]
       },
       "completeness_score": 1.0,
-      "generation_time": 1.929724931716919,
+      "generation_time": 1.8222427368164062,
       "generated_code": "service web {\n  image \"nginx:latest\"\n  replicas 1\n  ports 80:80,443:80,8080:80\n}\n"
     },
     {
@@ -959,13 +936,13 @@
       "grammar_errors": "",
       "parser_errors": "",
       "services_generated": [
-        "my-service"
+        "my_service"
       ],
       "services_expected": [
         "service"
       ],
       "attributes_generated": {
-        "my-service": [
+        "my_service": [
           "image",
           "env"
         ]
@@ -977,8 +954,8 @@
         ]
       },
       "completeness_score": 0.0,
-      "generation_time": 6.402698278427124,
-      "generated_code": "service my-service {\n  image \"my-image:latest\"\n  replicas 1\n  env ENV_VAR_1=value1, ENV_VAR_2=value2, ENV_VAR_3=value3, ENV_VAR_4=value4, ENV_VAR_5=value5, ENV_VAR_6=value6, ENV_VAR_7=value7, ENV_VAR_8=value8, ENV_VAR_9=value9, ENV_VAR_10=value10\n}\n"
+      "generation_time": 8.640676259994507,
+      "generated_code": "service my_service {\n  image \"my_image:latest\"\n  replicas 1\n  env ENV_VAR_1=value1, ENV_VAR_2=value2, ENV_VAR_3=value3, ENV_VAR_4=value4, ENV_VAR_5=value5, ENV_VAR_6=value6, ENV_VAR_7=value7, ENV_VAR_8=value8, ENV_VAR_9=value9, ENV_VAR_10=value10\n}\n"
     },
     {
       "test_id": "edge_005",
@@ -1018,8 +995,8 @@
         ]
       },
       "completeness_score": 1.0,
-      "generation_time": 3.2555091381073,
-      "generated_code": "service web {\n  image \"nginx:latest\"\n  replicas 1\n  ports 80:80\n}\n\nservice db {\n  image \"postgres:16\"\n  replicas 1\n  ports 5432:5432\n  env POSTGRES_USER=admin, POSTGRES_PASSWORD=secret\n}\n\nservice cache {\n  image \"redis:7\"\n  replicas 1\n  ports 6379:6379\n}\n"
+      "generation_time": 2.38211989402771,
+      "generated_code": "service web {\n  image \"nginx\"\n  replicas 1\n  ports 80:80\n}\n\nservice db {\n  image \"postgres:16\"\n  replicas 1\n  ports 5432:5432\n  env POSTGRES_USER=admin, POSTGRES_PASSWORD=secret\n}\n\nservice cache {\n  image \"redis:7\"\n  replicas 1\n  ports 6379:6379\n}\n"
     },
     {
       "test_id": "real_001",
@@ -1031,10 +1008,10 @@
       "grammar_errors": "",
       "parser_errors": "",
       "services_generated": [
+        "web",
         "django-app",
         "db",
-        "cache",
-        "nginx"
+        "cache"
       ],
       "services_expected": [
         "app",
@@ -1043,6 +1020,11 @@
         "nginx"
       ],
       "attributes_generated": {
+        "web": [
+          "image",
+          "replicas",
+          "ports"
+        ],
         "django-app": [
           "image",
           "ports",
@@ -1055,11 +1037,6 @@
         ],
         "cache": [
           "image",
-          "ports"
-        ],
-        "nginx": [
-          "image",
-          "replicas",
           "ports"
         ]
       },
@@ -1084,9 +1061,9 @@
           "replicas"
         ]
       },
-      "completeness_score": 0.75,
-      "generation_time": 3.5588619709014893,
-      "generated_code": "service django-app {\n  image \"python:3.11\"\n  replicas 1\n  ports 8000:8000\n  env SECRET_KEY=your_secret_key\n}\n\nservice db {\n  image \"postgres:16\"\n  replicas 1\n  ports 5432:5432\n  env POSTGRES_USER=admin, POSTGRES_PASSWORD=secret\n}\n\nservice cache {\n  image \"redis:7\"\n  replicas 1\n  ports 6379:6379\n}\n\nservice nginx {\n  image \"nginx:latest\"\n  replicas 2\n  ports 80:80,443:443\n}\n"
+      "completeness_score": 0.625,
+      "generation_time": 5.632788896560669,
+      "generated_code": "service web {\n  image \"nginx:latest\"\n  replicas 2\n  ports 80:80,443:443\n}\n\nservice django-app {\n  image \"python:3.11\"\n  replicas 1\n  ports 8000:8000\n  env SECRET_KEY=your_secret_key\n}\n\nservice db {\n  image \"postgres:16\"\n  replicas 1\n  ports 5432:5432\n  env POSTGRES_USER=admin, POSTGRES_PASSWORD=secret\n}\n\nservice cache {\n  image \"redis:7\"\n  replicas 1\n  ports 6379:6379\n}\n"
     },
     {
       "test_id": "real_002",
@@ -1111,19 +1088,16 @@
         "mongodb": [
           "image",
           "ports",
-          "env",
-          "volumes"
+          "env"
         ],
         "api": [
           "image",
           "ports",
-          "env",
-          "volumes"
+          "env"
         ],
         "frontend": [
           "image",
-          "ports",
-          "volumes"
+          "ports"
         ]
       },
       "attributes_expected": {
@@ -1143,8 +1117,8 @@
         ]
       },
       "completeness_score": 1.0,
-      "generation_time": 4.692137002944946,
-      "generated_code": "service mongodb {\n  image \"mongo:latest\"\n  replicas 1\n  ports 27017:27017\n  env MONGO_INITDB_ROOT_USERNAME=admin, MONGO_INITDB_ROOT_PASSWORD=secret\n  volumes \"/data/db:/data/db\"\n}\n\nservice api {\n  image \"node:18\"\n  replicas 1\n  ports 3000:3000\n  env DB_URL=mongodb://admin:secret@mongodb:27017\n  volumes \"./api:/usr/src/app\"\n}\n\nservice frontend {\n  image \"nginx:latest\"\n  replicas 1\n  ports 80:80\n  volumes \"./frontend:/usr/share/nginx/html\"\n}\n"
+      "generation_time": 4.151255130767822,
+      "generated_code": "service mongodb {\n  image \"mongo:latest\"\n  replicas 1\n  ports 27017:27017\n  env MONGO_INITDB_ROOT_USERNAME=mongo_user, MONGO_INITDB_ROOT_PASSWORD=mongo_pass\n}\n\nservice api {\n  image \"node:18\"\n  replicas 1\n  ports 3000:3000\n  env DB_URL=mongodb://mongo_user:mongo_pass@mongodb:27017\n}\n\nservice frontend {\n  image \"nginx:latest\"\n  replicas 1\n  ports 80:80\n}\n"
     },
     {
       "test_id": "real_003",
@@ -1159,7 +1133,7 @@
         "api",
         "db",
         "cache",
-        "load_balancer"
+        "web"
       ],
       "services_expected": [
         "api",
@@ -1182,7 +1156,7 @@
           "image",
           "ports"
         ],
-        "load_balancer": [
+        "web": [
           "image",
           "replicas",
           "ports"
@@ -1209,8 +1183,8 @@
         ]
       },
       "completeness_score": 0.875,
-      "generation_time": 2.9467830657958984,
-      "generated_code": "service api {\n  image \"openjdk:17\"\n  replicas 1\n  ports 8080:8080\n  env SPRING_PROFILES_ACTIVE=prod\n}\n\nservice db {\n  image \"postgres:16\"\n  replicas 1\n  ports 5432:5432\n  env POSTGRES_USER=admin, POSTGRES_PASSWORD=secret\n}\n\nservice cache {\n  image \"redis:7\"\n  replicas 1\n  ports 6379:6379\n}\n\nservice load_balancer {\n  image \"nginx:latest\"\n  replicas 3\n  ports 80:80\n}\n"
+      "generation_time": 3.5874929428100586,
+      "generated_code": "service api {\n  image \"openjdk:17\"\n  replicas 1\n  ports 8080:8080\n  env SPRING_PROFILES_ACTIVE=prod\n}\n\nservice db {\n  image \"postgres:16\"\n  replicas 1\n  ports 5432:5432\n  env POSTGRES_USER=admin, POSTGRES_PASSWORD=secret\n}\n\nservice cache {\n  image \"redis:7\"\n  replicas 1\n  ports 6379:6379\n}\n\nservice web {\n  image \"nginx:latest\"\n  replicas 3\n  ports 80:80\n}\n"
     },
     {
       "test_id": "real_004",
@@ -1260,7 +1234,7 @@
         ]
       },
       "completeness_score": 0.8333333333333333,
-      "generation_time": 2.226170063018799,
+      "generation_time": 4.686113119125366,
       "generated_code": "service jenkins {\n  image \"jenkins/jenkins:lts\"\n  replicas 1\n  ports 8080:8080\n  volumes \"/data/jenkins:/var/jenkins_home\"\n}\n\nservice gitlab-runner {\n  image \"gitlab/gitlab-runner:latest\"\n  replicas 1\n}\n\nservice nexus {\n  image \"sonatype/nexus3:latest\"\n  replicas 1\n  ports 8081:8081\n}\n"
     },
     {
@@ -1269,9 +1243,9 @@
       "complexity": "complex",
       "prompt": "Deploy a messaging system: RabbitMQ on port 5672 with management UI on 15672, Kafka on port 9092, and Zookeeper on port 2181 with persistent volumes",
       "grammar_valid": true,
-      "parser_valid": true,
+      "parser_valid": false,
       "grammar_errors": "",
-      "parser_errors": "",
+      "parser_errors": "parse error: unexpected token in service block: Colon\n",
       "services_generated": [
         "rabbitmq",
         "kafka",
@@ -1291,11 +1265,13 @@
         "kafka": [
           "image",
           "ports",
+          "env",
           "volumes"
         ],
         "zookeeper": [
           "image",
           "ports",
+          "env",
           "volumes"
         ]
       },
@@ -1316,8 +1292,8 @@
         ]
       },
       "completeness_score": 1.0,
-      "generation_time": 2.939000129699707,
-      "generated_code": "service rabbitmq {\n  image \"rabbitmq:3-management\"\n  replicas 1\n  ports 5672:5672,15672:15672\n  volumes \"/var/lib/rabbitmq:/var/lib/rabbitmq\"\n}\n\nservice kafka {\n  image \"confluentinc/cp-kafka:latest\"\n  replicas 1\n  ports 9092:9092\n  volumes \"/var/lib/kafka:/var/lib/kafka\"\n}\n\nservice zookeeper {\n  image \"confluentinc/cp-zookeeper:latest\"\n  replicas 1\n  ports 2181:2181\n  volumes \"/var/lib/zookeeper:/var/lib/zookeeper\"\n}\n"
+      "generation_time": 5.248409748077393,
+      "generated_code": "service rabbitmq {\n  image \"rabbitmq:3-management\"\n  replicas 1\n  ports 5672:5672,15672:15672\n  volumes \"/var/lib/rabbitmq:/var/lib/rabbitmq\"\n}\n\nservice kafka {\n  image \"confluentinc/cp-kafka:latest\"\n  replicas 1\n  ports 9092:9092\n  env KAFKA_ZOOKEEPER_CONNECT=localhost:2181, KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092\n  volumes \"/var/lib/kafka:/var/lib/kafka\"\n}\n\nservice zookeeper {\n  image \"confluentinc/cp-zookeeper:latest\"\n  replicas 1\n  ports 2181:2181\n  env ZOOKEEPER_CLIENT_PORT=2181\n  volumes \"/var/lib/zookeeper:/var/lib/zookeeper\"\n}\n"
     }
   ]
 }

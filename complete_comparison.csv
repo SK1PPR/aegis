@@ -1,9 +1,9 @@
 Metric,Conversational_Agent,Plain_LLM,Template_Based,Grammar_CFG,Best_Approach
-Validity_%,89.290,0.000,0.000,0.000,Conversational
+Validity_%,85.710,92.860,67.860,82.140,Plain_LLM
 Grammar_Pass_%,100.000,100.000,78.570,92.860,Conversational+Plain_LLM
-Parser_Pass_%,89.290,0.000,0.000,0.000,Conversational
-Completeness_%,82.290,80.800,96.480,90.140,Template
+Parser_Pass_%,85.710,92.860,89.290,89.290,Plain_LLM
+Completeness_%,80.950,87.500,96.480,90.140,Template
 Extensibility_%,100.000,100.000,76.470,88.240,Conversational+Plain_LLM
-Avg_Latency_s,2.991,1.109,0.002,0.003,Template
-Median_Latency_s,2.742,1.140,0.002,0.003,Template
-P95_Latency_s,6.403,1.638,0.005,0.007,Template
+Avg_Latency_s,4.423,1.534,0.002,0.002,Template+Grammar_CFG
+Median_Latency_s,3.720,1.432,0.002,0.001,Grammar_CFG
+P95_Latency_s,8.628,2.737,0.004,0.004,Template+Grammar_CFG

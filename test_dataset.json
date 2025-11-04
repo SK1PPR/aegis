@@ -2,17 +2,17 @@
   "metadata": {
     "total_cases": 28,
     "categories": [
-      "database",
+      "real_world",
       "multi_service",
       "edge_case",
-      "complex",
+      "database",
       "basic_web",
-      "real_world"
+      "complex"
     ],
     "complexity_levels": [
       "medium",
-      "simple",
-      "complex"
+      "complex",
+      "simple"
     ]
   },
   "test_cases": [
