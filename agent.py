@@ -1,253 +1,204 @@
-"""Conversational agent for natural language to container-lang DSL."""
+"""OTA-specific agent using three-stage retrieval pipeline."""
 
 import os
 import json
-import subprocess
-from typing import List, Dict, Optional
+from typing import Optional, Dict, List
+from dataclasses import dataclass
 from openai import OpenAI
 from dotenv import load_dotenv
-from schema import Program, ConversationResponse
-from dsl_generator import generate_dsl, validate_program
-from grammar_validator import validate_and_explain
+from knowledge_base import (
+    OTAKnowledgeBase,
+    OTADeploymentPattern,
+    ECUType,
+    SafetyClass,
+    DeploymentMode
+)
 
-
-# Load environment variables
 load_dotenv()
 
 
+@dataclass
+class AgentResponse:
+    """Response from OTA agent"""
+    message: str
+    deployment_spec: Optional[Dict] = None
+    retrieved_patterns: Optional[List[tuple]] = None  # (pattern, score, breakdown)
+    validation_results: Optional[Dict] = None
+    is_valid: bool = False
+
+
 class DSLAgent:
-    """Conversational agent that converts natural language to DSL code."""
-
-    SYSTEM_PROMPT = """You are an expert assistant that helps users create container-lang DSL code.
-
-# About container-lang DSL
-Container-lang is a simple declarative language for defining containerized services.
-
-Syntax:
-```
-service <name> {
-  image "<docker-image>"
-  replicas <number>
-  ports <host>:<container>[,<host>:<container>...]
-  env <KEY>=<value>[,<KEY>=<value>...]
-  volumes "<host-path>:<container-path>"[,"<host-path>:<container-path>"...]
-}
-```
-
-Required fields:
-- name: service identifier
-- image: Docker image name
-
-Optional fields:
-- replicas: number of instances (default: 1)
-- ports: port mappings (host:container)
-- env: environment variables
-- volumes: volume mounts
-
-# Your role
-1. Have a conversation with the user to understand what they want to deploy
-2. Ask clarifying questions if needed (image versions, ports, env vars, etc.)
-3. When ready, generate the structured Program
-4. Help users refine the configuration through conversation
-
-# Common patterns to suggest:
-- Web servers: nginx, apache, caddy
-- Databases: postgres, mysql, mongodb, redis
-- APIs: node, python, go applications
-- Standard ports: 80/443 (web), 5432 (postgres), 3306 (mysql), 6379 (redis), 27017 (mongodb)
-
-# Conversation guidelines:
-- Be concise and helpful
-- Suggest reasonable defaults (e.g., nginx:latest for web servers)
-- Ask about critical missing info (ports for web services, credentials for databases)
-- Set needs_clarification=true if you need more information before generating
-- Only include 'program' in your response when user explicitly wants to generate/update code
-"""
-
-    EXAMPLES = [
-        {
-            "user": "I need a web server",
-            "assistant": {
-                "message": "I can help you set up a web server! A few questions:\n1. Which web server? (nginx, apache, or caddy)\n2. What ports should it listen on?\n3. Do you have static files to serve?",
-                "needs_clarification": True
-            }
-        },
-        {
-            "user": "nginx on port 80",
-            "assistant": {
-                "message": "Great! I'll create an nginx web server on port 80. Should I generate the code now?",
-                "needs_clarification": False
-            }
-        },
-        {
-            "user": "yes, generate it",
-            "assistant": {
-                "message": "Here's your nginx web server configuration:",
-                "program": {
-                    "services": [{
-                        "name": "web",
-                        "image": "nginx:latest",
-                        "replicas": 1,
-                        "ports": [{"host": 80, "container": 80}]
-                    }]
-                },
-                "needs_clarification": False
-            }
-        },
-        {
-            "user": "I need postgres database and redis cache",
-            "assistant": {
-                "message": "I'll set up PostgreSQL and Redis for you. For PostgreSQL, do you want to specify:\n1. Database credentials (user/password)?\n2. Port (default 5432)?\n3. Data persistence volume?\n\nFor Redis, default port 6379 is standard.",
-                "needs_clarification": True
-            }
-        },
-        {
-            "user": "use default postgres on 5432 with user admin and password secret, redis on default port",
-            "assistant": {
-                "message": "Perfect! Generating your database and cache setup:",
-                "program": {
-                    "services": [
-                        {
-                            "name": "db",
-                            "image": "postgres:16",
-                            "replicas": 1,
-                            "ports": [{"host": 5432, "container": 5432}],
-                            "env": [
-                                {"key": "POSTGRES_USER", "value": "admin"},
-                                {"key": "POSTGRES_PASSWORD", "value": "secret"}
-                            ]
-                        },
-                        {
-                            "name": "cache",
-                            "image": "redis:7",
-                            "replicas": 1,
-                            "ports": [{"host": 6379, "container": 6379}]
-                        }
-                    ]
-                },
-                "needs_clarification": False
-            }
-        }
-    ]
-
-    def __init__(self):
-        """Initialize the agent with OpenAI client."""
+    """Agent for generating OTA deployment specifications"""
+    
+    def __init__(self, model: str = "gpt-4-1106-preview"):
         api_key = os.getenv("OPENAI_API_KEY")
         if not api_key:
-            raise ValueError("OPENAI_API_KEY not found in environment variables")
-
+            raise ValueError("OPENAI_API_KEY environment variable not set")
+        
         self.client = OpenAI(api_key=api_key)
-        self.conversation_history: List[Dict[str, str]] = []
-        self.current_program: Optional[Program] = None
-        self.model = "gpt-4o-2024-08-06"  # Supports structured outputs
+        self.model = model
+        self.kb = OTAKnowledgeBase()
+        self.conversation_history = []
+        
+        self.system_prompt = """You are an expert system for generating OTA (Over-The-Air) update deployment specifications for automotive ECUs.
 
-    def _build_messages(self, user_message: str) -> List[Dict[str, str]]:
-        """Build the message list for the API call."""
-        messages = [{"role": "system", "content": self.SYSTEM_PROMPT}]
+Your role:
+1. Understand OTA update requirements from user queries
+2. Use retrieved OTA patterns that match ECU type, safety class, region, and version
+3. Generate valid deployment specifications following schema rules
+4. Ensure safety-critical requirements are met
+5. Include rollback procedures and verification steps
 
-        # Add examples for few-shot learning
-        for example in self.EXAMPLES:
-            messages.append({"role": "user", "content": example["user"]})
-            messages.append({"role": "assistant", "content": json.dumps(example["assistant"])})
+Output Format:
+Respond with valid JSON:
+{
+    "message": "conversational response",
+    "needs_clarification": boolean,
+    "clarification_questions": ["questions if needed"],
+    "deployment_spec": {
+        "update_package": {...},
+        "pre_conditions": {...},
+        "installation": {...},
+        "post_conditions": {...}
+    }
+}
 
-        # Add conversation history
-        messages.extend(self.conversation_history)
-
-        # Add current message
-        messages.append({"role": "user", "content": user_message})
-
-        return messages
-
-    def chat(self, user_message: str, max_retries: int = 2) -> ConversationResponse:
-        """Send a message and get a structured response with grammar validation."""
-        messages = self._build_messages(user_message)
-
-        # Try up to max_retries times if grammar validation fails
-        for attempt in range(max_retries + 1):
-            # Call OpenAI with structured output
-            completion = self.client.beta.chat.completions.parse(
-                model=self.model,
-                messages=messages,
-                response_format=ConversationResponse,
-                temperature=0.7,
+ALWAYS follow retrieved pattern schemas and validation rules.
+For ASIL-B/C/D, include mandatory safety checks."""
+        
+        self._initialize_conversation()
+    
+    def _initialize_conversation(self):
+        self.conversation_history = [
+            {"role": "system", "content": self.system_prompt}
+        ]
+    
+    def _build_ota_context(
+        self,
+        patterns: List[tuple],
+        query: str
+    ) -> str:
+        """Build context from retrieved OTA patterns"""
+        if not patterns:
+            return ""
+        
+        context = "\n\n# Retrieved OTA Patterns (Metadata Filtered + Semantically Ranked):\n\n"
+        
+        for i, (pattern, score, breakdown) in enumerate(patterns, 1):
+            context += f"## Pattern {i}: {pattern.name}\n"
+            context += f"**Composite Score:** {breakdown['composite']:.3f}\n"
+            context += f"- Semantic: {breakdown['semantic']:.3f}\n"
+            context += f"- Schema: {breakdown['schema']:.3f}\n"
+            context += f"- Recency: {breakdown['recency']:.3f}\n"
+            context += f"- Validation: {breakdown['validation']:.3f}\n\n"
+            
+            context += f"**Metadata:**\n"
+            context += f"- Device: {pattern.metadata.device_type.value}\n"
+            context += f"- Version: {pattern.metadata.sw_version}\n"
+            context += f"- Safety: {pattern.metadata.safety_class.value}\n"
+            context += f"- Region: {pattern.metadata.region}\n"
+            context += f"- Mode: {pattern.metadata.deployment_mode.value}\n\n"
+            
+            context += f"**Deployment Spec Template:**\n"
+            context += f"```json\n{json.dumps(pattern.deployment_spec, indent=2)}\n```\n\n"
+            
+            context += f"**Schema Fields (MUST follow):**\n"
+            for field in pattern.schema_fields:
+                context += f"- {field.name}: {field.field_type}, required={field.required}\n"
+                if field.validation_pattern:
+                    context += f"  Pattern: {field.validation_pattern}\n"
+            
+            context += f"\n**Validation Rules:**\n"
+            for rule in pattern.validation_rules:
+                context += f"- {rule}\n"
+            
+            context += f"\n**Rollback:** {pattern.rollback_procedure}\n\n"
+            context += f"**Best Practices:**\n"
+            for bp in pattern.best_practices:
+                context += f"- {bp}\n"
+            
+            context += "\n---\n\n"
+        
+        return context
+    
+    def chat(
+        self,
+        user_message: str,
+        device_type: ECUType,
+        sw_version: str,
+        safety_class: SafetyClass,
+        region: str,
+        hardware_revision: str,
+        deployment_mode: Optional[DeploymentMode] = None,
+        required_capabilities: Optional[set] = None
+    ) -> AgentResponse:
+        """Chat with metadata-filtered retrieval"""
+        
+        # Three-stage retrieval
+        retrieved_patterns = self.kb.retrieve_ota_patterns(
+            query=user_message,
+            device_type=device_type,
+            sw_version=sw_version,
+            safety_class=safety_class,
+            region=region,
+            hardware_revision=hardware_revision,
+            deployment_mode=deployment_mode,
+            required_capabilities=required_capabilities,
+            top_k=2
+        )
+        
+        if not retrieved_patterns:
+            return AgentResponse(
+                message=f"No compatible OTA patterns found for {device_type.value} with safety class {safety_class.value}",
+                retrieved_patterns=[]
             )
-
-            response = completion.choices[0].message.parsed
-
-            # If there's a program, validate it against grammar rules
-            if response.program:
-                is_valid, validation_message = validate_and_explain(response.program)
-
-                if not is_valid and attempt < max_retries:
-                    # Grammar validation failed - retry with error feedback
-                    correction_prompt = (
-                        f"The generated program has grammar errors:\n\n{validation_message}\n\n"
-                        f"Please fix these errors and generate a corrected version."
-                    )
-                    messages.append({"role": "assistant", "content": json.dumps(response.model_dump())})
-                    messages.append({"role": "user", "content": correction_prompt})
-                    continue  # Retry
-
-                elif not is_valid:
-                    # Max retries reached - append validation errors to message
-                    response.message += f"\n\n⚠️  Warning: Generated code has validation issues:\n{validation_message}"
-
-            # Success or max retries reached
-            break
-
-        # Update conversation history
-        self.conversation_history.append({"role": "user", "content": user_message})
+        
+        # Build context
+        ota_context = self._build_ota_context(retrieved_patterns, user_message)
+        enhanced_message = ota_context + f"\n\n# User Request:\n{user_message}"
+        
+        # Add to conversation
+        self.conversation_history.append({
+            "role": "user",
+            "content": enhanced_message
+        })
+        
+        # Get LLM response
+        try:
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=self.conversation_history,
+                temperature=0.3,  # Lower for deterministic OTA specs
+                response_format={"type": "json_object"}
+            )
+        except Exception as e:
+            if "response_format" in str(e):
+                response = self.client.chat.completions.create(
+                    model=self.model,
+                    messages=self.conversation_history,
+                    temperature=0.3
+                )
+            else:
+                raise e
+        
+        assistant_message = response.choices[0].message.content
         self.conversation_history.append({
             "role": "assistant",
-            "content": json.dumps(response.model_dump())
+            "content": assistant_message
         })
-
-        # Update current program if provided
-        if response.program:
-            self.current_program = response.program
-
-        return response
-
-    def generate_code(self) -> Optional[str]:
-        """Generate DSL code from current program."""
-        if not self.current_program:
-            return None
-
-        # Validate before generating
-        errors = validate_program(self.current_program)
-        if errors:
-            return f"Validation errors:\n" + "\n".join(f"  - {err}" for err in errors)
-
-        return generate_dsl(self.current_program)
-
-    def validate_with_parser(self, dsl_code: str, parser_path: str) -> tuple[bool, str]:
-        """Validate DSL code using the Rust parser."""
+        
+        # Parse response
         try:
-            # Write to temp file
-            temp_file = "/tmp/temp_dsl.container"
-            with open(temp_file, "w") as f:
-                f.write(dsl_code)
-
-            # Run the parser
-            result = subprocess.run(
-                [parser_path, temp_file],
-                capture_output=True,
-                text=True,
-                timeout=5
+            response_data = json.loads(assistant_message)
+        except json.JSONDecodeError:
+            return AgentResponse(
+                message="Error parsing response",
+                retrieved_patterns=retrieved_patterns
             )
-
-            if result.returncode == 0:
-                return True, "Valid DSL code!"
-            else:
-                return False, f"Parser error:\n{result.stderr}"
-        except subprocess.TimeoutExpired:
-            return False, "Parser timeout"
-        except FileNotFoundError:
-            return False, f"Parser not found at {parser_path}"
-        except Exception as e:
-            return False, f"Error running parser: {str(e)}"
-
-    def reset(self):
-        """Reset the conversation."""
-        self.conversation_history = []
-        self.current_program = None
+        
+        return AgentResponse(
+            message=response_data.get("message", ""),
+            deployment_spec=response_data.get("deployment_spec"),
+            retrieved_patterns=retrieved_patterns,
+            is_valid=True if response_data.get("deployment_spec") else False
+        )
