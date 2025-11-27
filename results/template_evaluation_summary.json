@@ -1,0 +1,12 @@
+{
+  "approach": "Template-Based (Jinja2)",
+  "total_tests": 28,
+  "validity_percentage": 67.86,
+  "grammar_pass_rate": 78.57,
+  "parser_pass_rate": 89.29,
+  "completeness_percentage": 96.48,
+  "extensibility_percentage": 76.47,
+  "avg_latency_seconds": 0.002,
+  "median_latency_seconds": 0.002,
+  "p95_latency_seconds": 0.004
+}

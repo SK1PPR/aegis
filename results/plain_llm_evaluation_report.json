@@ -1,0 +1,1278 @@
+{
+  "metadata": {
+    "approach": "Plain LLM (Single-Shot)",
+    "model": "gpt-4o-2024-08-06",
+    "total_tests": 28
+  },
+  "metrics": {
+    "total_tests": 28,
+    "validity_percentage": 92.85714285714286,
+    "grammar_pass_rate": 100.0,
+    "parser_pass_rate": 92.85714285714286,
+    "completeness_percentage": 87.5,
+    "avg_service_coverage": 87.5,
+    "avg_attribute_coverage": 87.5,
+    "extensibility_percentage": 100.0,
+    "avg_latency": 1.5342339788164412,
+    "median_latency": 1.4320509433746338,
+    "p95_latency": 2.7369589805603027,
+    "p99_latency": 3.350224733352661,
+    "by_category": {
+      "real_world": {
+        "total": 5,
+        "grammar_pass_rate": 100.0,
+        "completeness": 83.33333333333333,
+        "avg_latency": 2.138642978668213
+      },
+      "edge_case": {
+        "total": 5,
+        "grammar_pass_rate": 100.0,
+        "completeness": 60.0,
+        "avg_latency": 1.1196391582489014
+      },
+      "multi_service": {
+        "total": 4,
+        "grammar_pass_rate": 100.0,
+        "completeness": 96.875,
+        "avg_latency": 1.4648659825325012
+      },
+      "basic_web": {
+        "total": 5,
+        "grammar_pass_rate": 100.0,
+        "completeness": 100.0,
+        "avg_latency": 1.3680209636688232
+      },
+      "complex": {
+        "total": 3,
+        "grammar_pass_rate": 100.0,
+        "completeness": 81.94444444444443,
+        "avg_latency": 1.8314396540323894
+      },
+      "database": {
+        "total": 6,
+        "grammar_pass_rate": 100.0,
+        "completeness": 100.0,
+        "avg_latency": 1.4122088352839153
+      }
+    },
+    "by_complexity": {
+      "simple": {
+        "total": 6,
+        "grammar_pass_rate": 100.0,
+        "completeness": 100.0,
+        "avg_latency": 1.1749731302261353
+      },
+      "complex": {
+        "total": 12,
+        "grammar_pass_rate": 100.0,
+        "completeness": 87.5,
+        "avg_latency": 1.9811915755271912
+      },
+      "medium": {
+        "total": 10,
+        "grammar_pass_rate": 100.0,
+        "completeness": 80.0,
+        "avg_latency": 1.2134413719177246
+      }
+    }
+  },
+  "test_results": [
+    {
+      "test_id": "web_001",
+      "category": "basic_web",
+      "complexity": "simple",
+      "prompt": "I need an nginx web server on port 80",
+      "grammar_valid": true,
+      "parser_valid": true,
+      "grammar_errors": "",
+      "parser_errors": "",
+      "services_generated": [
+        "web"
+      ],
+      "services_expected": [
+        "web"
+      ],
+      "attributes_generated": {
+        "web": [
+          "image",
+          "ports"
+        ]
+      },
+      "attributes_expected": {
+        "web": [
+          "image",
+          "ports"
+        ]
+      },
+      "completeness_score": 1.0,
+      "generation_time": 1.7002849578857422,
+      "generated_code": "service web {\n  image \"nginx:latest\"\n  ports 80:80\n}",
+      "raw_response": "service web {\n  image \"nginx:latest\"\n  ports 80:80\n}"
+    },
+    {
+      "test_id": "web_002",
+      "category": "basic_web",
+      "complexity": "simple",
+      "prompt": "Deploy apache web server listening on port 8080",
+      "grammar_valid": true,
+      "parser_valid": true,
+      "grammar_errors": "",
+      "parser_errors": "",
+      "services_generated": [
+        "web"
+      ],
+      "services_expected": [
+        "web"
+      ],
+      "attributes_generated": {
+        "web": [
+          "image",
+          "ports"
+        ]
+      },
+      "attributes_expected": {
+        "web": [
+          "image",
+          "ports"
+        ]
+      },
+      "completeness_score": 1.0,
+      "generation_time": 1.0999979972839355,
+      "generated_code": "service web {\n  image \"httpd:latest\"\n  ports 8080:80\n}",
+      "raw_response": "service web {\n  image \"httpd:latest\"\n  ports 8080:80\n}"
+    },
+    {
+      "test_id": "web_003",
+      "category": "basic_web",
+      "complexity": "medium",
+      "prompt": "Set up nginx on ports 80 and 443 with 3 replicas",
+      "grammar_valid": true,
+      "parser_valid": true,
+      "grammar_errors": "",
+      "parser_errors": "",
+      "services_generated": [
+        "web"
+      ],
+      "services_expected": [
+        "web"
+      ],
+      "attributes_generated": {
+        "web": [
+          "image",
+          "replicas",
+          "ports"
+        ]
+      },
+      "attributes_expected": {
+        "web": [
+          "image",
+          "ports",
+          "replicas"
+        ]
+      },
+      "completeness_score": 1.0,
+      "generation_time": 1.8304228782653809,
+      "generated_code": "service web {\n  image \"nginx:latest\"\n  replicas 3\n  ports 80:80,443:443\n}",
+      "raw_response": "service web {\n  image \"nginx:latest\"\n  replicas 3\n  ports 80:80,443:443\n}"
+    },
+    {
+      "test_id": "web_004",
+      "category": "basic_web",
+      "complexity": "medium",
+      "prompt": "I need a caddy server on port 80 with volume /data/web:/usr/share/caddy",
+      "grammar_valid": true,
+      "parser_valid": true,
+      "grammar_errors": "",
+      "parser_errors": "",
+      "services_generated": [
+        "web"
+      ],
+      "services_expected": [
+        "web"
+      ],
+      "attributes_generated": {
+        "web": [
+          "image",
+          "ports",
+          "volumes"
+        ]
+      },
+      "attributes_expected": {
+        "web": [
+          "image",
+          "ports",
+          "volumes"
+        ]
+      },
+      "completeness_score": 1.0,
+      "generation_time": 1.0961389541625977,
+      "generated_code": "service web {\n  image \"caddy:latest\"\n  ports 80:80\n  volumes \"/data/web:/usr/share/caddy\"\n}",
+      "raw_response": "service web {\n  image \"caddy:latest\"\n  ports 80:80\n  volumes \"/data/web:/usr/share/caddy\"\n}"
+    },
+    {
+      "test_id": "web_005",
+      "category": "basic_web",
+      "complexity": "medium",
+      "prompt": "Deploy nginx with environment variables NGINX_HOST=example.com and NGINX_PORT=80",
+      "grammar_valid": true,
+      "parser_valid": false,
+      "grammar_errors": "",
+      "parser_errors": "parse error: unexpected character '.' at 3:25\n",
+      "services_generated": [
+        "web"
+      ],
+      "services_expected": [
+        "web"
+      ],
+      "attributes_generated": {
+        "web": [
+          "image",
+          "env"
+        ]
+      },
+      "attributes_expected": {
+        "web": [
+          "image",
+          "env"
+        ]
+      },
+      "completeness_score": 1.0,
+      "generation_time": 1.11326003074646,
+      "generated_code": "service web {\n  image \"nginx:latest\"\n  env NGINX_HOST=example.com,NGINX_PORT=80\n}",
+      "raw_response": "service web {\n  image \"nginx:latest\"\n  env NGINX_HOST=example.com,NGINX_PORT=80\n}"
+    },
+    {
+      "test_id": "db_001",
+      "category": "database",
+      "complexity": "simple",
+      "prompt": "I need a postgres database on port 5432",
+      "grammar_valid": true,
+      "parser_valid": true,
+      "grammar_errors": "",
+      "parser_errors": "",
+      "services_generated": [
+        "db"
+      ],
+      "services_expected": [
+        "db"
+      ],
+      "attributes_generated": {
+        "db": [
+          "image",
+          "ports"
+        ]
+      },
+      "attributes_expected": {
+        "db": [
+          "image",
+          "ports"
+        ]
+      },
+      "completeness_score": 1.0,
+      "generation_time": 0.8424360752105713,
+      "generated_code": "service db {\n  image \"postgres:16\"\n  ports 5432:5432\n}",
+      "raw_response": "service db {\n  image \"postgres:16\"\n  ports 5432:5432\n}"
+    },
+    {
+      "test_id": "db_002",
+      "category": "database",
+      "complexity": "medium",
+      "prompt": "Set up postgres with username admin, password secret123, and database myapp",
+      "grammar_valid": true,
+      "parser_valid": true,
+      "grammar_errors": "",
+      "parser_errors": "",
+      "services_generated": [
+        "db"
+      ],
+      "services_expected": [
+        "db"
+      ],
+      "attributes_generated": {
+        "db": [
+          "image",
+          "env"
+        ]
+      },
+      "attributes_expected": {
+        "db": [
+          "image",
+          "env"
+        ]
+      },
+      "completeness_score": 1.0,
+      "generation_time": 1.1082370281219482,
+      "generated_code": "service db {\n  image \"postgres:16\"\n  env POSTGRES_USER=admin,POSTGRES_PASSWORD=secret123,POSTGRES_DB=myapp\n}",
+      "raw_response": "service db {\n  image \"postgres:16\"\n  env POSTGRES_USER=admin,POSTGRES_PASSWORD=secret123,POSTGRES_DB=myapp\n}"
+    },
+    {
+      "test_id": "db_003",
+      "category": "database",
+      "complexity": "medium",
+      "prompt": "Deploy MySQL on port 3306 with root password mysecret and persistent volume /data/mysql:/var/lib/mysql",
+      "grammar_valid": true,
+      "parser_valid": true,
+      "grammar_errors": "",
+      "parser_errors": "",
+      "services_generated": [
+        "db"
+      ],
+      "services_expected": [
+        "db"
+      ],
+      "attributes_generated": {
+        "db": [
+          "image",
+          "ports",
+          "env",
+          "volumes"
+        ]
+      },
+      "attributes_expected": {
+        "db": [
+          "image",
+          "ports",
+          "env",
+          "volumes"
+        ]
+      },
+      "completeness_score": 1.0,
+      "generation_time": 1.0777819156646729,
+      "generated_code": "service db {\n  image \"mysql:latest\"\n  ports 3306:3306\n  env MYSQL_ROOT_PASSWORD=mysecret\n  volumes \"/data/mysql:/var/lib/mysql\"\n}",
+      "raw_response": "service db {\n  image \"mysql:latest\"\n  ports 3306:3306\n  env MYSQL_ROOT_PASSWORD=mysecret\n  volumes \"/data/mysql:/var/lib/mysql\"\n}"
+    },
+    {
+      "test_id": "db_004",
+      "category": "database",
+      "complexity": "simple",
+      "prompt": "I need redis cache on default port 6379",
+      "grammar_valid": true,
+      "parser_valid": true,
+      "grammar_errors": "",
+      "parser_errors": "",
+      "services_generated": [
+        "cache"
+      ],
+      "services_expected": [
+        "cache"
+      ],
+      "attributes_generated": {
+        "cache": [
+          "image",
+          "ports"
+        ]
+      },
+      "attributes_expected": {
+        "cache": [
+          "image",
+          "ports"
+        ]
+      },
+      "completeness_score": 1.0,
+      "generation_time": 1.5552699565887451,
+      "generated_code": "service cache {\n  image \"redis:7\"\n  ports 6379:6379\n}",
+      "raw_response": "service cache {\n  image \"redis:7\"\n  ports 6379:6379\n}"
+    },
+    {
+      "test_id": "db_005",
+      "category": "database",
+      "complexity": "medium",
+      "prompt": "Set up MongoDB on port 27017 with username mongouser, password mongopass, and volume for data persistence",
+      "grammar_valid": true,
+      "parser_valid": true,
+      "grammar_errors": "",
+      "parser_errors": "",
+      "services_generated": [
+        "db"
+      ],
+      "services_expected": [
+        "db"
+      ],
+      "attributes_generated": {
+        "db": [
+          "image",
+          "ports",
+          "env",
+          "volumes"
+        ]
+      },
+      "attributes_expected": {
+        "db": [
+          "image",
+          "ports",
+          "env",
+          "volumes"
+        ]
+      },
+      "completeness_score": 1.0,
+      "generation_time": 1.152569055557251,
+      "generated_code": "service db {\n  image \"mongo:latest\"\n  ports 27017:27017\n  env MONGO_INITDB_ROOT_USERNAME=mongouser,MONGO_INITDB_ROOT_PASSWORD=mongopass\n  volumes \"/data/db:/data/db\"\n}",
+      "raw_response": "service db {\n  image \"mongo:latest\"\n  ports 27017:27017\n  env MONGO_INITDB_ROOT_USERNAME=mongouser,MONGO_INITDB_ROOT_PASSWORD=mongopass\n  volumes \"/data/db:/data/db\"\n}"
+    },
+    {
+      "test_id": "db_006",
+      "category": "database",
+      "complexity": "complex",
+      "prompt": "Deploy postgres cluster with 3 replicas, credentials admin/secret, port 5432, and data volume /pgdata:/var/lib/postgresql/data",
+      "grammar_valid": true,
+      "parser_valid": true,
+      "grammar_errors": "",
+      "parser_errors": "",
+      "services_generated": [
+        "db"
+      ],
+      "services_expected": [
+        "db"
+      ],
+      "attributes_generated": {
+        "db": [
+          "image",
+          "replicas",
+          "ports",
+          "env",
+          "volumes"
+        ]
+      },
+      "attributes_expected": {
+        "db": [
+          "image",
+          "replicas",
+          "ports",
+          "env",
+          "volumes"
+        ]
+      },
+      "completeness_score": 1.0,
+      "generation_time": 2.7369589805603027,
+      "generated_code": "service db {\n  image \"postgres:16\"\n  replicas 3\n  ports 5432:5432\n  env POSTGRES_USER=admin,POSTGRES_PASSWORD=secret\n  volumes \"/pgdata:/var/lib/postgresql/data\"\n}",
+      "raw_response": "service db {\n  image \"postgres:16\"\n  replicas 3\n  ports 5432:5432\n  env POSTGRES_USER=admin,POSTGRES_PASSWORD=secret\n  volumes \"/pgdata:/var/lib/postgresql/data\"\n}"
+    },
+    {
+      "test_id": "multi_001",
+      "category": "multi_service",
+      "complexity": "medium",
+      "prompt": "I need nginx web server on port 80 and postgres database on port 5432",
+      "grammar_valid": true,
+      "parser_valid": true,
+      "grammar_errors": "",
+      "parser_errors": "",
+      "services_generated": [
+        "web",
+        "db"
+      ],
+      "services_expected": [
+        "web",
+        "db"
+      ],
+      "attributes_generated": {
+        "web": [
+          "image",
+          "ports"
+        ],
+        "db": [
+          "image",
+          "ports"
+        ]
+      },
+      "attributes_expected": {
+        "web": [
+          "image",
+          "ports"
+        ],
+        "db": [
+          "image",
+          "ports"
+        ]
+      },
+      "completeness_score": 1.0,
+      "generation_time": 1.009657859802246,
+      "generated_code": "service web {\n  image \"nginx:latest\"\n  ports 80:80\n}\n\nservice db {\n  image \"postgres:16\"\n  ports 5432:5432\n}",
+      "raw_response": "service web {\n  image \"nginx:latest\"\n  ports 80:80\n}\n\nservice db {\n  image \"postgres:16\"\n  ports 5432:5432\n}"
+    },
+    {
+      "test_id": "multi_002",
+      "category": "multi_service",
+      "complexity": "complex",
+      "prompt": "Deploy a web app with nginx on port 80, postgres database with user admin password secret on port 5432, and redis cache on port 6379",
+      "grammar_valid": true,
+      "parser_valid": true,
+      "grammar_errors": "",
+      "parser_errors": "",
+      "services_generated": [
+        "web",
+        "db",
+        "cache"
+      ],
+      "services_expected": [
+        "web",
+        "db",
+        "cache"
+      ],
+      "attributes_generated": {
+        "web": [
+          "image",
+          "ports"
+        ],
+        "db": [
+          "image",
+          "ports",
+          "env"
+        ],
+        "cache": [
+          "image",
+          "ports"
+        ]
+      },
+      "attributes_expected": {
+        "web": [
+          "image",
+          "ports"
+        ],
+        "db": [
+          "image",
+          "ports",
+          "env"
+        ],
+        "cache": [
+          "image",
+          "ports"
+        ]
+      },
+      "completeness_score": 1.0,
+      "generation_time": 1.3901350498199463,
+      "generated_code": "service web {\n  image \"nginx:latest\"\n  ports 80:80\n}\n\nservice db {\n  image \"postgres:16\"\n  ports 5432:5432\n  env POSTGRES_USER=admin,POSTGRES_PASSWORD=secret\n}\n\nservice cache {\n  image \"redis:7\"\n  ports 6379:6379\n}",
+      "raw_response": "service web {\n  image \"nginx:latest\"\n  ports 80:80\n}\n\nservice db {\n  image \"postgres:16\"\n  ports 5432:5432\n  env POSTGRES_USER=admin,POSTGRES_PASSWORD=secret\n}\n\nservice cache {\n  image \"redis:7\"\n  ports 6379:6379\n}"
+    },
+    {
+      "test_id": "multi_003",
+      "category": "multi_service",
+      "complexity": "complex",
+      "prompt": "Set up microservices: api service using node:18 on port 3000, postgres database on 5432 with credentials, and nginx reverse proxy on port 80",
+      "grammar_valid": true,
+      "parser_valid": true,
+      "grammar_errors": "",
+      "parser_errors": "",
+      "services_generated": [
+        "api",
+        "db",
+        "proxy"
+      ],
+      "services_expected": [
+        "api",
+        "db",
+        "proxy"
+      ],
+      "attributes_generated": {
+        "api": [
+          "image",
+          "ports"
+        ],
+        "db": [
+          "image",
+          "ports",
+          "env"
+        ],
+        "proxy": [
+          "image",
+          "ports"
+        ]
+      },
+      "attributes_expected": {
+        "api": [
+          "image",
+          "ports"
+        ],
+        "db": [
+          "image",
+          "ports",
+          "env"
+        ],
+        "proxy": [
+          "image",
+          "ports"
+        ]
+      },
+      "completeness_score": 1.0,
+      "generation_time": 1.3111460208892822,
+      "generated_code": "service api {\n  image \"node:18\"\n  ports 3000:3000\n}\n\nservice db {\n  image \"postgres:16\"\n  ports 5432:5432\n  env POSTGRES_USER=admin,POSTGRES_PASSWORD=secret\n}\n\nservice proxy {\n  image \"nginx:latest\"\n  ports 80:80\n}",
+      "raw_response": "service api {\n  image \"node:18\"\n  ports 3000:3000\n}\n\nservice db {\n  image \"postgres:16\"\n  ports 5432:5432\n  env POSTGRES_USER=admin,POSTGRES_PASSWORD=secret\n}\n\nservice proxy {\n  image \"nginx:latest\"\n  ports 80:80\n}"
+    },
+    {
+      "test_id": "multi_004",
+      "category": "multi_service",
+      "complexity": "complex",
+      "prompt": "I need a backend API with python:3.11 on port 8000, MySQL database on 3306, Redis for caching on 6379, and nginx load balancer on port 80 with 2 replicas",
+      "grammar_valid": true,
+      "parser_valid": true,
+      "grammar_errors": "",
+      "parser_errors": "",
+      "services_generated": [
+        "api",
+        "db",
+        "cache",
+        "lb"
+      ],
+      "services_expected": [
+        "api",
+        "db",
+        "cache",
+        "loadbalancer"
+      ],
+      "attributes_generated": {
+        "api": [
+          "image",
+          "ports"
+        ],
+        "db": [
+          "image",
+          "ports"
+        ],
+        "cache": [
+          "image",
+          "ports"
+        ],
+        "lb": [
+          "image",
+          "replicas",
+          "ports"
+        ]
+      },
+      "attributes_expected": {
+        "api": [
+          "image",
+          "ports"
+        ],
+        "db": [
+          "image",
+          "ports"
+        ],
+        "cache": [
+          "image",
+          "ports"
+        ],
+        "loadbalancer": [
+          "image",
+          "ports",
+          "replicas"
+        ]
+      },
+      "completeness_score": 0.875,
+      "generation_time": 2.1485249996185303,
+      "generated_code": "service api {\n  image \"python:3.11\"\n  ports 8000:8000\n}\n\nservice db {\n  image \"mysql:latest\"\n  ports 3306:3306\n}\n\nservice cache {\n  image \"redis:7\"\n  ports 6379:6379\n}\n\nservice lb {\n  image \"nginx:latest\"\n  replicas 2\n  ports 80:80\n}",
+      "raw_response": "service api {\n  image \"python:3.11\"\n  ports 8000:8000\n}\n\nservice db {\n  image \"mysql:latest\"\n  ports 3306:3306\n}\n\nservice cache {\n  image \"redis:7\"\n  ports 6379:6379\n}\n\nservice lb {\n  image \"nginx:latest\"\n  replicas 2\n  ports 80:80\n}"
+    },
+    {
+      "test_id": "complex_001",
+      "category": "complex",
+      "complexity": "complex",
+      "prompt": "Deploy a WordPress site with wordpress:latest on port 80, MySQL database with MYSQL_ROOT_PASSWORD=rootpass, MYSQL_DATABASE=wordpress, MYSQL_USER=wpuser, MYSQL_PASSWORD=wppass on port 3306, and volumes for both services",
+      "grammar_valid": true,
+      "parser_valid": true,
+      "grammar_errors": "",
+      "parser_errors": "",
+      "services_generated": [
+        "wordpress",
+        "mysql"
+      ],
+      "services_expected": [
+        "wordpress",
+        "db"
+      ],
+      "attributes_generated": {
+        "wordpress": [
+          "image",
+          "ports",
+          "volumes"
+        ],
+        "mysql": [
+          "image",
+          "ports",
+          "env",
+          "volumes"
+        ]
+      },
+      "attributes_expected": {
+        "wordpress": [
+          "image",
+          "ports",
+          "env",
+          "volumes"
+        ],
+        "db": [
+          "image",
+          "ports",
+          "env",
+          "volumes"
+        ]
+      },
+      "completeness_score": 0.625,
+      "generation_time": 1.5444588661193848,
+      "generated_code": "service wordpress {\n  image \"wordpress:latest\"\n  ports 80:80\n  volumes \"/host/path/to/wordpress:/var/www/html\"\n}\n\nservice mysql {\n  image \"mysql:latest\"\n  ports 3306:3306\n  env MYSQL_ROOT_PASSWORD=rootpass,MYSQL_DATABASE=wordpress,MYSQL_USER=wpuser,MYSQL_PASSWORD=wppass\n  volumes \"/host/path/to/mysql:/var/lib/mysql\"\n}",
+      "raw_response": "service wordpress {\n  image \"wordpress:latest\"\n  ports 80:80\n  volumes \"/host/path/to/wordpress:/var/www/html\"\n}\n\nservice mysql {\n  image \"mysql:latest\"\n  ports 3306:3306\n  env MYSQL_ROOT_PASSWORD=rootpass,MYSQL_DATABASE=wordpress,MYSQL_USER=wpuser,MYSQL_PASSWORD=wppass\n  volumes \"/host/path/to/mysql:/var/lib/mysql\"\n}"
+    },
+    {
+      "test_id": "complex_002",
+      "category": "complex",
+      "complexity": "complex",
+      "prompt": "Set up a monitoring stack: prometheus on port 9090 with volume /data/prometheus:/prometheus, grafana on port 3000 with GF_SECURITY_ADMIN_PASSWORD=admin, and node-exporter on port 9100",
+      "grammar_valid": true,
+      "parser_valid": true,
+      "grammar_errors": "",
+      "parser_errors": "",
+      "services_generated": [
+        "prometheus",
+        "grafana",
+        "node_exporter"
+      ],
+      "services_expected": [
+        "prometheus",
+        "grafana",
+        "exporter"
+      ],
+      "attributes_generated": {
+        "prometheus": [
+          "image",
+          "ports",
+          "volumes"
+        ],
+        "grafana": [
+          "image",
+          "ports",
+          "env"
+        ],
+        "node_exporter": [
+          "image",
+          "ports"
+        ]
+      },
+      "attributes_expected": {
+        "prometheus": [
+          "image",
+          "ports",
+          "volumes"
+        ],
+        "grafana": [
+          "image",
+          "ports",
+          "env"
+        ],
+        "exporter": [
+          "image",
+          "ports"
+        ]
+      },
+      "completeness_score": 0.8333333333333333,
+      "generation_time": 1.9127118587493896,
+      "generated_code": "service prometheus {\n  image \"prom/prometheus:latest\"\n  ports 9090:9090\n  volumes \"/data/prometheus:/prometheus\"\n}\n\nservice grafana {\n  image \"grafana/grafana:latest\"\n  ports 3000:3000\n  env GF_SECURITY_ADMIN_PASSWORD=admin\n}\n\nservice node_exporter {\n  image \"prom/node-exporter:latest\"\n  ports 9100:9100\n}",
+      "raw_response": "service prometheus {\n  image \"prom/prometheus:latest\"\n  ports 9090:9090\n  volumes \"/data/prometheus:/prometheus\"\n}\n\nservice grafana {\n  image \"grafana/grafana:latest\"\n  ports 3000:3000\n  env GF_SECURITY_ADMIN_PASSWORD=admin\n}\n\nservice node_exporter {\n  image \"prom/node-exporter:latest\"\n  ports 9100:9100\n}"
+    },
+    {
+      "test_id": "complex_003",
+      "category": "complex",
+      "complexity": "complex",
+      "prompt": "Create an ELK stack: elasticsearch on port 9200 with volume /data/es:/usr/share/elasticsearch/data, logstash on port 5000, and kibana on port 5601",
+      "grammar_valid": true,
+      "parser_valid": true,
+      "grammar_errors": "",
+      "parser_errors": "",
+      "services_generated": [
+        "elasticsearch",
+        "logstash",
+        "kibana"
+      ],
+      "services_expected": [
+        "elasticsearch",
+        "logstash",
+        "kibana"
+      ],
+      "attributes_generated": {
+        "elasticsearch": [
+          "image",
+          "ports",
+          "volumes"
+        ],
+        "logstash": [
+          "image",
+          "ports"
+        ],
+        "kibana": [
+          "image",
+          "ports"
+        ]
+      },
+      "attributes_expected": {
+        "elasticsearch": [
+          "image",
+          "ports",
+          "volumes"
+        ],
+        "logstash": [
+          "image",
+          "ports"
+        ],
+        "kibana": [
+          "image",
+          "ports"
+        ]
+      },
+      "completeness_score": 1.0,
+      "generation_time": 2.0371482372283936,
+      "generated_code": "service elasticsearch {\n  image \"elasticsearch:8.10\"\n  ports 9200:9200\n  volumes \"/data/es:/usr/share/elasticsearch/data\"\n}\n\nservice logstash {\n  image \"logstash:8.10\"\n  ports 5000:5000\n}\n\nservice kibana {\n  image \"kibana:8.10\"\n  ports 5601:5601\n}",
+      "raw_response": "service elasticsearch {\n  image \"elasticsearch:8.10\"\n  ports 9200:9200\n  volumes \"/data/es:/usr/share/elasticsearch/data\"\n}\n\nservice logstash {\n  image \"logstash:8.10\"\n  ports 5000:5000\n}\n\nservice kibana {\n  image \"kibana:8.10\"\n  ports 5601:5601\n}"
+    },
+    {
+      "test_id": "edge_001",
+      "category": "edge_case",
+      "complexity": "simple",
+      "prompt": "Deploy nginx",
+      "grammar_valid": true,
+      "parser_valid": true,
+      "grammar_errors": "",
+      "parser_errors": "",
+      "services_generated": [
+        "web"
+      ],
+      "services_expected": [
+        "web"
+      ],
+      "attributes_generated": {
+        "web": [
+          "image"
+        ]
+      },
+      "attributes_expected": {
+        "web": [
+          "image"
+        ]
+      },
+      "completeness_score": 1.0,
+      "generation_time": 0.9055538177490234,
+      "generated_code": "service web {\n  image \"nginx:latest\"\n}",
+      "raw_response": "service web {\n  image \"nginx:latest\"\n}"
+    },
+    {
+      "test_id": "edge_002",
+      "category": "edge_case",
+      "complexity": "medium",
+      "prompt": "I want a service with 5 replicas",
+      "grammar_valid": true,
+      "parser_valid": true,
+      "grammar_errors": "",
+      "parser_errors": "",
+      "services_generated": [
+        "my_service"
+      ],
+      "services_expected": [
+        "service"
+      ],
+      "attributes_generated": {
+        "my_service": [
+          "image",
+          "replicas"
+        ]
+      },
+      "attributes_expected": {
+        "service": [
+          "image",
+          "replicas"
+        ]
+      },
+      "completeness_score": 0.0,
+      "generation_time": 0.9100430011749268,
+      "generated_code": "service my_service {\n  image \"nginx:latest\"\n  replicas 5\n}",
+      "raw_response": "service my_service {\n  image \"nginx:latest\"\n  replicas 5\n}"
+    },
+    {
+      "test_id": "edge_003",
+      "category": "edge_case",
+      "complexity": "medium",
+      "prompt": "Set up a web service with ports 80, 443, 8080 all mapping to container port 80",
+      "grammar_valid": true,
+      "parser_valid": true,
+      "grammar_errors": "",
+      "parser_errors": "",
+      "services_generated": [
+        "web"
+      ],
+      "services_expected": [
+        "web"
+      ],
+      "attributes_generated": {
+        "web": [
+          "image",
+          "ports"
+        ]
+      },
+      "attributes_expected": {
+        "web": [
+          "image",
+          "ports"
+        ]
+      },
+      "completeness_score": 1.0,
+      "generation_time": 1.119157075881958,
+      "generated_code": "service web {\n  image \"nginx:latest\"\n  ports 80:80,443:80,8080:80\n}",
+      "raw_response": "service web {\n  image \"nginx:latest\"\n  ports 80:80,443:80,8080:80\n}"
+    },
+    {
+      "test_id": "edge_004",
+      "category": "edge_case",
+      "complexity": "medium",
+      "prompt": "Deploy a service with 10 environment variables for configuration",
+      "grammar_valid": true,
+      "parser_valid": true,
+      "grammar_errors": "",
+      "parser_errors": "",
+      "services_generated": [
+        "app"
+      ],
+      "services_expected": [
+        "service"
+      ],
+      "attributes_generated": {
+        "app": [
+          "image",
+          "env"
+        ]
+      },
+      "attributes_expected": {
+        "service": [
+          "image",
+          "env"
+        ]
+      },
+      "completeness_score": 0.0,
+      "generation_time": 1.7171459197998047,
+      "generated_code": "service app {\n  image \"nginx:latest\"\n  env VAR1=value1,VAR2=value2,VAR3=value3,VAR4=value4,VAR5=value5,VAR6=value6,VAR7=value7,VAR8=value8,VAR9=value9,VAR10=value10\n}",
+      "raw_response": "service app {\n  image \"nginx:latest\"\n  env VAR1=value1,VAR2=value2,VAR3=value3,VAR4=value4,VAR5=value5,VAR6=value6,VAR7=value7,VAR8=value8,VAR9=value9,VAR10=value10\n}"
+    },
+    {
+      "test_id": "edge_005",
+      "category": "edge_case",
+      "complexity": "simple",
+      "prompt": "I need latest version of nginx",
+      "grammar_valid": true,
+      "parser_valid": true,
+      "grammar_errors": "",
+      "parser_errors": "",
+      "services_generated": [
+        "web"
+      ],
+      "services_expected": [
+        "web"
+      ],
+      "attributes_generated": {
+        "web": [
+          "image"
+        ]
+      },
+      "attributes_expected": {
+        "web": [
+          "image"
+        ]
+      },
+      "completeness_score": 1.0,
+      "generation_time": 0.946295976638794,
+      "generated_code": "service web {\n  image \"nginx:latest\"\n}",
+      "raw_response": "service web {\n  image \"nginx:latest\"\n}"
+    },
+    {
+      "test_id": "real_001",
+      "category": "real_world",
+      "complexity": "complex",
+      "prompt": "Deploy a Django application: django app using python:3.11 on port 8000 with SECRET_KEY env, postgres database on 5432 with credentials, redis for session storage on 6379, and nginx as reverse proxy on ports 80 and 443 with 2 replicas",
+      "grammar_valid": true,
+      "parser_valid": true,
+      "grammar_errors": "",
+      "parser_errors": "",
+      "services_generated": [
+        "django-app",
+        "db",
+        "cache",
+        "web"
+      ],
+      "services_expected": [
+        "app",
+        "db",
+        "redis",
+        "nginx"
+      ],
+      "attributes_generated": {
+        "django-app": [
+          "image",
+          "ports",
+          "env"
+        ],
+        "db": [
+          "image",
+          "ports",
+          "env"
+        ],
+        "cache": [
+          "image",
+          "ports"
+        ],
+        "web": [
+          "image",
+          "replicas",
+          "ports"
+        ]
+      },
+      "attributes_expected": {
+        "app": [
+          "image",
+          "ports",
+          "env"
+        ],
+        "db": [
+          "image",
+          "ports",
+          "env"
+        ],
+        "redis": [
+          "image",
+          "ports"
+        ],
+        "nginx": [
+          "image",
+          "ports",
+          "replicas"
+        ]
+      },
+      "completeness_score": 0.625,
+      "generation_time": 3.350224733352661,
+      "generated_code": "service django-app {\n  image \"python:3.11\"\n  ports 8000:8000\n  env SECRET_KEY=your_secret_key\n}\n\nservice db {\n  image \"postgres:16\"\n  ports 5432:5432\n  env POSTGRES_USER=admin,POSTGRES_PASSWORD=secret\n}\n\nservice cache {\n  image \"redis:7\"\n  ports 6379:6379\n}\n\nservice web {\n  image \"nginx:latest\"\n  replicas 2\n  ports 80:80,443:443\n}",
+      "raw_response": "service django-app {\n  image \"python:3.11\"\n  ports 8000:8000\n  env SECRET_KEY=your_secret_key\n}\n\nservice db {\n  image \"postgres:16\"\n  ports 5432:5432\n  env POSTGRES_USER=admin,POSTGRES_PASSWORD=secret\n}\n\nservice cache {\n  image \"redis:7\"\n  ports 6379:6379\n}\n\nservice web {\n  image \"nginx:latest\"\n  replicas 2\n  ports 80:80,443:443\n}"
+    },
+    {
+      "test_id": "real_002",
+      "category": "real_world",
+      "complexity": "complex",
+      "prompt": "Set up a MEAN stack: MongoDB on port 27017 with auth, Express API using node:18 on port 3000 with DB_URL environment variable, and nginx frontend on port 80",
+      "grammar_valid": true,
+      "parser_valid": false,
+      "grammar_errors": "",
+      "parser_errors": "parse error: unexpected token in service block: Colon\n",
+      "services_generated": [
+        "database",
+        "api",
+        "frontend"
+      ],
+      "services_expected": [
+        "mongodb",
+        "api",
+        "frontend"
+      ],
+      "attributes_generated": {
+        "database": [
+          "image",
+          "ports",
+          "env"
+        ],
+        "api": [
+          "image",
+          "ports",
+          "env"
+        ],
+        "frontend": [
+          "image",
+          "ports"
+        ]
+      },
+      "attributes_expected": {
+        "mongodb": [
+          "image",
+          "ports",
+          "env"
+        ],
+        "api": [
+          "image",
+          "ports",
+          "env"
+        ],
+        "frontend": [
+          "image",
+          "ports"
+        ]
+      },
+      "completeness_score": 0.8333333333333333,
+      "generation_time": 2.1293652057647705,
+      "generated_code": "service database {\n  image \"mongo:latest\"\n  ports 27017:27017\n  env MONGO_INITDB_ROOT_USERNAME=root,MONGO_INITDB_ROOT_PASSWORD=password\n}\n\nservice api {\n  image \"node:18\"\n  ports 3000:3000\n  env DB_URL=mongodb://root:password@database:27017\n}\n\nservice frontend {\n  image \"nginx:latest\"\n  ports 80:80\n}",
+      "raw_response": "service database {\n  image \"mongo:latest\"\n  ports 27017:27017\n  env MONGO_INITDB_ROOT_USERNAME=root,MONGO_INITDB_ROOT_PASSWORD=password\n}\n\nservice api {\n  image \"node:18\"\n  ports 3000:3000\n  env DB_URL=mongodb://root:password@database:27017\n}\n\nservice frontend {\n  image \"nginx:latest\"\n  ports 80:80\n}"
+    },
+    {
+      "test_id": "real_003",
+      "category": "real_world",
+      "complexity": "complex",
+      "prompt": "Deploy a Java microservice: Spring Boot API using openjdk:17 on port 8080 with SPRING_PROFILES_ACTIVE=prod, postgres database on 5432, Redis cache on 6379, and nginx load balancer on port 80 with 3 replicas",
+      "grammar_valid": true,
+      "parser_valid": true,
+      "grammar_errors": "",
+      "parser_errors": "",
+      "services_generated": [
+        "api",
+        "db",
+        "cache",
+        "load_balancer"
+      ],
+      "services_expected": [
+        "api",
+        "db",
+        "cache",
+        "lb"
+      ],
+      "attributes_generated": {
+        "api": [
+          "image",
+          "ports",
+          "env"
+        ],
+        "db": [
+          "image",
+          "ports"
+        ],
+        "cache": [
+          "image",
+          "ports"
+        ],
+        "load_balancer": [
+          "image",
+          "replicas",
+          "ports"
+        ]
+      },
+      "attributes_expected": {
+        "api": [
+          "image",
+          "ports",
+          "env"
+        ],
+        "db": [
+          "image",
+          "ports"
+        ],
+        "cache": [
+          "image",
+          "ports"
+        ],
+        "lb": [
+          "image",
+          "ports",
+          "replicas"
+        ]
+      },
+      "completeness_score": 0.875,
+      "generation_time": 1.6067872047424316,
+      "generated_code": "service api {\n  image \"openjdk:17\"\n  ports 8080:8080\n  env SPRING_PROFILES_ACTIVE=prod\n}\n\nservice db {\n  image \"postgres:16\"\n  ports 5432:5432\n}\n\nservice cache {\n  image \"redis:7\"\n  ports 6379:6379\n}\n\nservice load_balancer {\n  image \"nginx:latest\"\n  replicas 3\n  ports 80:80\n}",
+      "raw_response": "service api {\n  image \"openjdk:17\"\n  ports 8080:8080\n  env SPRING_PROFILES_ACTIVE=prod\n}\n\nservice db {\n  image \"postgres:16\"\n  ports 5432:5432\n}\n\nservice cache {\n  image \"redis:7\"\n  ports 6379:6379\n}\n\nservice load_balancer {\n  image \"nginx:latest\"\n  replicas 3\n  ports 80:80\n}"
+    },
+    {
+      "test_id": "real_004",
+      "category": "real_world",
+      "complexity": "complex",
+      "prompt": "Create a CI/CD pipeline services: Jenkins on port 8080 with volume /data/jenkins:/var/jenkins_home, GitLab runner, and Nexus repository on port 8081",
+      "grammar_valid": true,
+      "parser_valid": true,
+      "grammar_errors": "",
+      "parser_errors": "",
+      "services_generated": [
+        "jenkins",
+        "gitlab-runner",
+        "nexus"
+      ],
+      "services_expected": [
+        "jenkins",
+        "runner",
+        "nexus"
+      ],
+      "attributes_generated": {
+        "jenkins": [
+          "image",
+          "ports",
+          "volumes"
+        ],
+        "gitlab-runner": [
+          "image"
+        ],
+        "nexus": [
+          "image",
+          "ports"
+        ]
+      },
+      "attributes_expected": {
+        "jenkins": [
+          "image",
+          "ports",
+          "volumes"
+        ],
+        "runner": [
+          "image"
+        ],
+        "nexus": [
+          "image",
+          "ports"
+        ]
+      },
+      "completeness_score": 0.8333333333333333,
+      "generation_time": 1.4320509433746338,
+      "generated_code": "service jenkins {\n  image \"jenkins/jenkins:lts\"\n  ports 8080:8080\n  volumes \"/data/jenkins:/var/jenkins_home\"\n}\n\nservice gitlab-runner {\n  image \"gitlab/gitlab-runner:latest\"\n}\n\nservice nexus {\n  image \"sonatype/nexus3\"\n  ports 8081:8081\n}",
+      "raw_response": "service jenkins {\n  image \"jenkins/jenkins:lts\"\n  ports 8080:8080\n  volumes \"/data/jenkins:/var/jenkins_home\"\n}\n\nservice gitlab-runner {\n  image \"gitlab/gitlab-runner:latest\"\n}\n\nservice nexus {\n  image \"sonatype/nexus3\"\n  ports 8081:8081\n}"
+    },
+    {
+      "test_id": "real_005",
+      "category": "real_world",
+      "complexity": "complex",
+      "prompt": "Deploy a messaging system: RabbitMQ on port 5672 with management UI on 15672, Kafka on port 9092, and Zookeeper on port 2181 with persistent volumes",
+      "grammar_valid": true,
+      "parser_valid": true,
+      "grammar_errors": "",
+      "parser_errors": "",
+      "services_generated": [
+        "rabbitmq",
+        "kafka",
+        "zookeeper"
+      ],
+      "services_expected": [
+        "rabbitmq",
+        "kafka",
+        "zookeeper"
+      ],
+      "attributes_generated": {
+        "rabbitmq": [
+          "image",
+          "ports"
+        ],
+        "kafka": [
+          "image",
+          "ports",
+          "volumes"
+        ],
+        "zookeeper": [
+          "image",
+          "ports",
+          "volumes"
+        ]
+      },
+      "attributes_expected": {
+        "rabbitmq": [
+          "image",
+          "ports"
+        ],
+        "kafka": [
+          "image",
+          "ports",
+          "volumes"
+        ],
+        "zookeeper": [
+          "image",
+          "ports",
+          "volumes"
+        ]
+      },
+      "completeness_score": 1.0,
+      "generation_time": 2.1747868061065674,
+      "generated_code": "service rabbitmq {\n  image \"rabbitmq:3-management\"\n  ports 5672:5672,15672:15672\n}\n\nservice kafka {\n  image \"confluentinc/cp-kafka:latest\"\n  ports 9092:9092\n  volumes \"/var/lib/kafka:/var/lib/kafka\"\n}\n\nservice zookeeper {\n  image \"confluentinc/cp-zookeeper:latest\"\n  ports 2181:2181\n  volumes \"/var/lib/zookeeper:/var/lib/zookeeper\"\n}",
+      "raw_response": "service rabbitmq {\n  image \"rabbitmq:3-management\"\n  ports 5672:5672,15672:15672\n}\n\nservice kafka {\n  image \"confluentinc/cp-kafka:latest\"\n  ports 9092:9092\n  volumes \"/var/lib/kafka:/var/lib/kafka\"\n}\n\nservice zookeeper {\n  image \"confluentinc/cp-zookeeper:latest\"\n  ports 2181:2181\n  volumes \"/var/lib/zookeeper:/var/lib/zookeeper\"\n}"
+    }
+  ]
+}
