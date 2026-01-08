@@ -12,8 +12,8 @@ from rich.prompt import Prompt, Confirm
 from rich.table import Table
 from rich.text import Text
 import json
-from agent import DSLAgent, AgentResponse
-from knowledge_base import (
+from src.agent import DSLAgent, AgentResponse
+from src.knowledge_base import (
     OTAKnowledgeBase,
     OTADeploymentPattern,
     ECUType,

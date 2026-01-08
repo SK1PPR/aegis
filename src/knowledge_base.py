@@ -653,43 +653,122 @@ class OTAKnowledgeBase:
         required_capabilities: Optional[Set[str]] = None
     ) -> List[OTADeploymentPattern]:
         """
-        Stage 1: Hard metadata filtering - eliminates incompatible patterns
-        
-        This is the deterministic gate that ensures ZERO cross-ECU contamination.
+        Stage 1: Hard metadata filtering with fallback strategy
+
+        Tries progressively relaxed matching if exact match fails:
+        1. Exact match
+        2. Relax region (allow GLOBAL or any region)
+        3. Relax hardware_revision
+        4. Relax deployment_mode
+        5. Match only device_type + safety_class (last resort)
         """
+        # Try exact match first
+        filtered = self._filter_with_criteria(
+            device_type, sw_version, safety_class, region,
+            hardware_revision, deployment_mode, required_capabilities,
+            strict=True
+        )
+
+        if filtered:
+            return filtered
+
+        # Fallback 1: Relax region (allow GLOBAL region as fallback)
+        filtered = self._filter_with_criteria(
+            device_type, sw_version, safety_class, None,  # region=None for relaxed matching
+            hardware_revision, deployment_mode, required_capabilities,
+            strict=False, allow_global_region=True, target_region=region
+        )
+
+        if filtered:
+            return filtered
+
+        # Fallback 2: Relax hardware_revision
+        filtered = self._filter_with_criteria(
+            device_type, sw_version, safety_class, None,
+            None,  # hardware_revision=None
+            deployment_mode, required_capabilities,
+            strict=False, allow_global_region=True, target_region=region
+        )
+
+        if filtered:
+            return filtered
+
+        # Fallback 3: Relax deployment_mode
+        filtered = self._filter_with_criteria(
+            device_type, sw_version, safety_class, None,
+            None, None,  # deployment_mode=None
+            required_capabilities,
+            strict=False, allow_global_region=True, target_region=region
+        )
+
+        if filtered:
+            return filtered
+
+        # Fallback 4: Match only device_type + safety_class (last resort)
         filtered = []
-        
         for pattern in self.patterns:
             m = pattern.metadata
-            
-            # Hard filters - ALL must match
+            if m.device_type == device_type and m.safety_class == safety_class:
+                filtered.append(pattern)
+
+        return filtered
+
+    def _filter_with_criteria(
+        self,
+        device_type: ECUType,
+        sw_version: str,
+        safety_class: SafetyClass,
+        region: Optional[str],
+        hardware_revision: Optional[str],
+        deployment_mode: Optional[DeploymentMode],
+        required_capabilities: Optional[Set[str]],
+        strict: bool = True,
+        allow_global_region: bool = False,
+        target_region: Optional[str] = None
+    ) -> List[OTADeploymentPattern]:
+        """Internal filtering with configurable strictness."""
+        filtered = []
+
+        for pattern in self.patterns:
+            m = pattern.metadata
+
+            # Hard filters - always required
             if m.device_type != device_type:
                 continue
-            
+
             if m.safety_class != safety_class:
                 continue
-            
-            if m.region != region:
-                continue
-            
-            if m.hardware_revision != hardware_revision:
-                continue
-            
+
+            # Region filter (relaxed or strict)
+            if region is not None:
+                if m.region != region:
+                    continue
+            elif allow_global_region and target_region:
+                # Allow GLOBAL region as fallback, or match target region
+                if m.region not in [target_region, "GLOBAL"]:
+                    continue
+
+            # Hardware revision (optional filter)
+            if hardware_revision is not None and strict:
+                if m.hardware_revision != hardware_revision:
+                    continue
+
             # Version compatibility check
             if not self._version_compatible(sw_version, pattern):
                 continue
-            
-            # Deployment mode (if specified)
-            if deployment_mode and m.deployment_mode != deployment_mode:
-                continue
-            
+
+            # Deployment mode (optional filter)
+            if deployment_mode is not None and strict:
+                if m.deployment_mode != deployment_mode:
+                    continue
+
             # Required capabilities (pattern must have all required)
-            if required_capabilities:
+            if required_capabilities and strict:
                 if not required_capabilities.issubset(m.required_capabilities):
                     continue
-            
+
             filtered.append(pattern)
-        
+
         return filtered
     
     # ==================== STAGE 2: VECTOR SEMANTIC RETRIEVAL ====================
