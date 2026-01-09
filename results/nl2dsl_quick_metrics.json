@@ -1,11 +1,11 @@
 {
   "system": "nl2dsl-agent",
-  "precision": 45.17387388458496,
-  "recall": 51.351851851851855,
-  "breakage_rate": 0.0,
-  "avg_latency_ms": 12288.400159941779,
-  "success_rate": 100.0,
-  "avg_cpu_pct": 0.1,
-  "avg_mem_mb": 433.171875,
-  "safety_compliance": 92.3076923076923
+  "precision": 47.714313817321546,
+  "recall": 53.588235294117645,
+  "breakage_rate": 5.555555555555555,
+  "avg_latency_ms": 12782.530347506205,
+  "success_rate": 94.44444444444444,
+  "avg_cpu_pct": 0.05,
+  "avg_mem_mb": 336.515625,
+  "safety_compliance": 84.61538461538461
 }
