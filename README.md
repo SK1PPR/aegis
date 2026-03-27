@@ -1,206 +1,121 @@
-# NL2DSL Agent - Natural Language to DSL Generation for OTA Updates
+# AEGIS: Retrieval-Grounded Generation of Safety-Critical Automotive OTA Deployment Specifications
 
-AI-powered system for generating deployment specifications for automotive Over-The-Air (OTA) updates from natural language descriptions.
+AEGIS is an LLM-based agent that turns plain-language OTA update requests into schema-valid, ISO 26262-compliant deployment specifications. Rather than generating safety-critical fields from scratch, AEGIS retrieves the closest matching template from a curated knowledge base of validated deployment patterns and constrains the LLM to adapt it — keeping all mandatory safety fields, rollback logic, and schema constraints intact.
+
+> Code artifact for the paper submitted to ASE 2026.
+> Repository: [https://github.com/SK1PPR/aegis](https://github.com/SK1PPR/aegis)
+
+---
+
+## How It Works
+
+AEGIS uses a three-stage retrieval pipeline before any LLM generation:
+
+1. **Metadata Filtering** — Hard constraints on ECU type, safety class, SW version, region, hardware revision, and deployment mode. Uses a five-level fallback that never relaxes ECU type or safety class.
+2. **Semantic Retrieval** — Dense vector search over metadata-approved candidates using `all-MiniLM-L6-v2` embeddings.
+3. **Schema-Aware Re-Ranking** — Composite score: `0.35·semantic + 0.30·schema + 0.20·recency + 0.15·validation`. Top-2 patterns are injected into the LLM prompt as templates.
+
+The LLM (`gpt-4o-2024-08-06`) then adapts the retrieved template to the user's request, preserving all safety-critical fields. The output is validated against the schema and safety rules; errors are fed back for corrective re-prompting.
+
+---
+
+## Results
+
+Evaluated on 18 OTA deployment test cases across 6 ECU types and 5 ASIL safety classes:
+
+| Metric | Value |
+|---|---|
+| Success Rate | 94.44% |
+| ASIL Safety Compliance | 84.62% |
+| Rollback Coverage | 84.62% |
+| Avg Latency | ~4.2 s |
+
+Compared against grammar-based (GR), template-based (TP), and plain-LLM (PL) baselines on a 28-task benchmark:
+
+| | Validity | Completeness | Extensibility |
+|---|---|---|---|
+| AEGIS (Ours) | 85.71% | 80.95% | 100% |
+| Plain LLM | 92.86% | 87.50% | 100% |
+| Grammar-Based | 82.14% | 90.14% | 88.24% |
+| Template-Based | 67.86% | 96.48% | 76.47% |
+
+---
 
 ## Project Structure
 
 ```
-nl2dsl-agent/
-├── src/                      # Core source code
-│   ├── __init__.py          # Package initialization
-│   ├── agent.py             # Main DSL agent with LLM integration
-│   ├── knowledge_base.py    # Three-stage retrieval pipeline
-│   ├── ota_metrics_evaluator.py  # Evaluation and metrics
-│   ├── ota_test_dataset.py  # Test dataset generation
-│   ├── dsl_generator.py     # DSL generation utilities
-│   ├── dataset_generator.py # Dataset utilities
-│   └── schema.py            # Schema definitions
+aegis/
+├── src/
+│   ├── agent.py                 # AEGIS agent — three-stage retrieval + LLM generation
+│   ├── knowledge_base.py        # Knowledge base, retrieval pipeline, re-ranking
+│   ├── ota_metrics_evaluator.py # Benchmark evaluation and metrics
+│   ├── ota_test_dataset.py      # 18-case OTA test dataset
+│   ├── dataset_generator.py     # 28-task DSL benchmark dataset
+│   ├── dsl_generator.py         # DSL generation utilities
+│   └── schema.py                # Schema definitions
 │
-├── data/                     # Data files
-│   ├── ota_knowledge_base.json      # Retrieval database (12 patterns)
-│   ├── automotive_ota_patterns.json # Source OTA patterns
-│   └── ota_test_dataset.json        # Generated test cases
+├── data/
+│   ├── ota_knowledge_base.json       # 19-pattern retrieval database
+│   └── automotive_ota_patterns.json  # Source OTA patterns
 │
-├── results/                  # Evaluation results
-│   ├── ota_evaluation_results.json  # Detailed benchmark results
-│   ├── nl2dsl_quick_metrics.json   # Quick metrics summary
-│   └── [historical results]
+├── results/
+│   ├── ota_evaluation_results.json       # 18-case OTA benchmark results
+│   ├── evaluation_summary.json           # 28-task AEGIS results
+│   ├── plain_llm_evaluation_summary.json # 28-task PL baseline
+│   ├── grammar_evaluation_summary.json   # 28-task GR baseline
+│   └── template_evaluation_summary.json  # 28-task TP baseline
 │
-├── scripts/                  # Utility scripts
-│   ├── convert_ota_patterns.py     # Convert patterns to KB format
-│   ├── fix_safety_class.py         # Fix safety class formatting
-│   ├── fix_schema_fields.py        # Fix schema field structure
-│   ├── load_automotive_patterns.py # Load patterns into KB
-│   ├── update_ota_metrics_graph.py # Update metrics visualization
-│   └── verify_ota_setup.py         # Verify setup completeness
-│
-├── tests/                    # Test files
-│   ├── test_agent_simple.py        # Simple agent tests
-│   ├── test_grammar.py             # Grammar validation tests
-│   └── verify_ota_patterns.py      # Pattern verification
-│
-├── deprecated/               # Old/unused code (kept for reference)
-│   ├── grammar_based_generator.py
-│   ├── template_based_generator.py
-│   └── [other legacy files]
-│
-├── docs/                     # Documentation
-│   ├── BENCHMARK_RESULTS_FINAL.md
-│   ├── OTA_BENCHMARK_SUMMARY.md
-│   ├── QUICKSTART_OTA_BENCHMARK.md
-│   └── SETUP.md
-│
-├── metrics_ota-main/         # Metrics for comparison with other systems
-│   └── nl2dsl_agent_metrics.json
-│
-├── run_ota_benchmark.py      # Main benchmark runner
-├── main.py                   # Alternative entry point
-├── .env                      # Environment variables (API keys)
-├── requirements.txt          # Python dependencies
-└── README.md                 # This file
+├── metrics_ota-main/            # Comparison metrics vs TUF, Balena, RAUC, etc.
+├── scripts/                     # Knowledge base utilities
+├── tests/                       # Test and verification scripts
+├── run_ota_benchmark.py         # Main benchmark runner
+├── main.py                      # Interactive entry point
+├── requirements.txt
+└── .env.example
 ```
+
+---
 
 ## Quick Start
 
-### 1. Installation
-
 ```bash
-# Create virtual environment
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-
-# Install dependencies
+# 1. Clone and set up environment
+git clone https://github.com/SK1PPR/aegis
+cd aegis
+python -m venv venv
+source venv/bin/activate        # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-```
 
-### 2. Configuration
+# 2. Configure API key
+cp .env.example .env
+# Edit .env and add your OPENAI_API_KEY
 
-Create a `.env` file with your OpenAI API key:
-```
-OPENAI_API_KEY=your_api_key_here
-```
-
-### 3. Run the Benchmark
-
-```bash
+# 3. Run the benchmark
 python run_ota_benchmark.py
 ```
 
-This will:
-1. Generate 18 OTA test cases
-2. Run evaluation using the nl2dsl agent
-3. Generate metrics compatible with other OTA systems
-4. Save results to `results/` directory
+Results are saved to `results/ota_evaluation_results.json`.
 
-## Key Features
+---
 
-### Three-Stage Retrieval Pipeline
+## Knowledge Base
 
-1. **Metadata Filtering** - Deterministic filtering by ECU type, safety class, region
-2. **Semantic Search** - Vector-based similarity matching
-3. **Schema-Aware Re-Ranking** - Structural and version-aware scoring
+19 validated OTA deployment patterns covering:
+- **ECU types**: Infotainment, ADAS, Powertrain, Telematics, Gateway, Body Control
+- **Safety classes**: QM, ASIL-A, ASIL-B, ASIL-C, ASIL-D
+- **Deployment modes**: A/B, Dual-bank, Delta, Full, Single-bank
+- **Regions**: US, EU, CN, GLOBAL
 
-### Knowledge Base
-
-- **12 OTA Patterns** covering:
-  - Multiple ECU types (infotainment, ADAS, powertrain, telematics, gateway)
-  - Safety levels (QM, ASIL-A, ASIL-B, ASIL-D)
-  - Regions (US, EU, CN)
-  - Deployment modes (A/B, dual-bank, delta, full)
-
-### Evaluation Metrics
-
-- **Precision & Recall** - Accuracy of generated specifications
-- **Success Rate** - Percentage of valid deployments
-- **Latency** - Generation time (avg, median, P95, P99)
-- **Safety Compliance** - Automotive-specific safety checks
-- **Rollback Coverage** - Emergency recovery procedures
-
-## Current Performance
-
-Based on the latest benchmark run:
-
-- **Precision**: 61.43%
-- **Recall**: 69.44%
-- **Success Rate**: 16.67%
-- **Avg Latency**: 1552ms
-- **Safety Compliance**: 7.69%
-
-## Development
-
-### Running Tests
-
+To add new patterns, edit `data/automotive_ota_patterns.json` and run:
 ```bash
-# Test agent functionality
-python tests/test_agent_simple.py
-
-# Verify OTA patterns
+python scripts/convert_ota_patterns.py
 python tests/verify_ota_patterns.py
 ```
 
-### Adding New Patterns
+---
 
-1. Add patterns to `data/automotive_ota_patterns.json`
-2. Run conversion script:
-   ```bash
-   python scripts/convert_ota_patterns.py
-   ```
-3. Verify patterns loaded correctly:
-   ```bash
-   python tests/verify_ota_patterns.py
-   ```
+## Requirements
 
-### Project Cleanup
-
-The project has been reorganized for clarity:
-- Core functionality in `src/`
-- Utility scripts in `scripts/`
-- Test files in `tests/`
-- Results and data separated
-- Deprecated code moved to `deprecated/`
-
-## Architecture
-
-### Agent (src/agent.py)
-- Manages conversation with LLM
-- Integrates with knowledge base for retrieval
-- Generates deployment specifications
-
-### Knowledge Base (src/knowledge_base.py)
-- Loads and indexes OTA patterns
-- Implements three-stage retrieval
-- Handles semantic embeddings
-
-### Evaluator (src/ota_metrics_evaluator.py)
-- Runs benchmark evaluation
-- Calculates precision/recall
-- Generates comparative metrics
-
-## Next Steps
-
-1. Improve success rate by:
-   - Adding more diverse patterns to knowledge base
-   - Better version/hardware matching
-   - Enhanced safety validation
-
-2. Expand test coverage:
-   - More edge cases
-   - Multi-ECU scenarios
-   - Regional variations
-
-3. Optimize performance:
-   - Reduce latency
-   - Improve retrieval accuracy
-   - Better LLM prompting
-
-## Contributing
-
-When adding new features:
-1. Put core functionality in `src/`
-2. Add tests to `tests/`
-3. Update documentation in `docs/`
-4. Keep utility scripts in `scripts/`
-
-## License
-
-[Your License Here]
+- Python 3.9+
+- OpenAI API key (`gpt-4o-2024-08-06`)
+- See `requirements.txt` for full dependency list
