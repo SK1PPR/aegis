@@ -12,3 +12,5 @@ conversation_history/
 venv/
 .DS_Store
 *.csv
+paper/
+.claude/

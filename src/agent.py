@@ -30,7 +30,7 @@ class AgentResponse:
 class DSLAgent:
     """Agent for generating OTA deployment specifications"""
     
-    def __init__(self, model: str = "gpt-4-1106-preview"):
+    def __init__(self, model: str = "gpt-4o-2024-08-06"):
         api_key = os.getenv("OPENAI_API_KEY")
         if not api_key:
             raise ValueError("OPENAI_API_KEY environment variable not set")
