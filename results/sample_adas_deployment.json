@@ -1,0 +1,31 @@
+{
+  "update_package": {
+    "name": "adas_camera_firmware_v3.2.0_to_v3.2.1",
+    "size_mb": 45,
+    "checksum": "sha256:xyz789...",
+    "signature": "RSA4096:ghi012...",
+    "compression": "bsdiff",
+    "delta_base_version": "3.2.0"
+  },
+  "pre_conditions": {
+    "battery_level_min": 70,
+    "vehicle_state": "parked",
+    "network_available": true,
+    "current_version_verified": true,
+    "safety_diagnostics_passed": true
+  },
+  "installation": {
+    "apply_delta_patch": true,
+    "target_partition": "active",
+    "backup_critical_configs": true,
+    "atomic_update": true,
+    "reboot_required": true
+  },
+  "post_conditions": {
+    "verify_boot": true,
+    "run_adas_diagnostics": true,
+    "calibration_check": true,
+    "report_telemetry": true,
+    "safety_validation": true
+  }
+}

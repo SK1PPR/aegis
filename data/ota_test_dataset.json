@@ -1,0 +1,444 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "description": "OTA test dataset for nl2dsl agent benchmarking",
+    "total_cases": 18
+  },
+  "statistics": {
+    "total_cases": 18,
+    "by_category": {
+      "single_ecu": 2,
+      "multi_ecu": 2,
+      "safety_critical": 2,
+      "infotainment": 2,
+      "adas": 2,
+      "powertrain": 2,
+      "regional": 2,
+      "rollback": 2,
+      "delta_update": 2,
+      "full_update": 0
+    },
+    "by_complexity": {
+      "simple": 2,
+      "medium": 5,
+      "complex": 6,
+      "very_complex": 5
+    },
+    "safety_critical_count": 13,
+    "multi_ecu_count": 5
+  },
+  "test_cases": [
+    {
+      "id": "ota_001",
+      "category": "single_ecu",
+      "complexity": "simple",
+      "prompt": "Update infotainment firmware to version 2.5.1 for US market",
+      "expected_ecus": [
+        "infotainment"
+      ],
+      "expected_attributes": {
+        "infotainment": [
+          "sw_version",
+          "region",
+          "deployment_mode",
+          "update_package"
+        ]
+      },
+      "safety_class": "QM",
+      "region": "US",
+      "description": "Simple single ECU update for non-safety-critical system"
+    },
+    {
+      "id": "ota_002",
+      "category": "single_ecu",
+      "complexity": "medium",
+      "prompt": "Deploy ADAS camera software v3.2.0 with pre-condition checks for EU vehicles",
+      "expected_ecus": [
+        "adas_camera"
+      ],
+      "expected_attributes": {
+        "adas_camera": [
+          "sw_version",
+          "region",
+          "pre_conditions",
+          "verification"
+        ]
+      },
+      "safety_class": "ASIL-B",
+      "region": "EU",
+      "description": "Medium complexity with safety checks"
+    },
+    {
+      "id": "ota_010",
+      "category": "multi_ecu",
+      "complexity": "complex",
+      "prompt": "Update both ADAS radar and camera ECUs simultaneously for China market with coordinated rollout",
+      "expected_ecus": [
+        "adas_radar",
+        "adas_camera"
+      ],
+      "expected_attributes": {
+        "adas_radar": [
+          "sw_version",
+          "region",
+          "deployment_order"
+        ],
+        "adas_camera": [
+          "sw_version",
+          "region",
+          "deployment_order"
+        ]
+      },
+      "safety_class": "ASIL-B",
+      "region": "CN",
+      "description": "Coordinated multi-ECU update"
+    },
+    {
+      "id": "ota_011",
+      "category": "multi_ecu",
+      "complexity": "very_complex",
+      "prompt": "Orchestrate gateway, telematics, and infotainment update with dependency management",
+      "expected_ecus": [
+        "gateway",
+        "telematics",
+        "infotainment"
+      ],
+      "expected_attributes": {
+        "gateway": [
+          "sw_version",
+          "dependencies",
+          "deployment_order"
+        ],
+        "telematics": [
+          "sw_version",
+          "dependencies",
+          "deployment_order"
+        ],
+        "infotainment": [
+          "sw_version",
+          "dependencies",
+          "deployment_order"
+        ]
+      },
+      "safety_class": "ASIL-A",
+      "region": "US",
+      "description": "Complex multi-ECU with dependencies"
+    },
+    {
+      "id": "ota_020",
+      "category": "safety_critical",
+      "complexity": "complex",
+      "prompt": "Update powertrain control unit ASIL-D with full safety verification and rollback capability",
+      "expected_ecus": [
+        "powertrain_ecu"
+      ],
+      "expected_attributes": {
+        "powertrain_ecu": [
+          "sw_version",
+          "safety_class",
+          "pre_conditions",
+          "verification",
+          "rollback_procedure",
+          "safety_checks"
+        ]
+      },
+      "safety_class": "ASIL-D",
+      "region": "US",
+      "description": "Highest safety level update"
+    },
+    {
+      "id": "ota_021",
+      "category": "safety_critical",
+      "complexity": "very_complex",
+      "prompt": "Deploy brake control ECU update ASIL-C with vehicle state validation and staged rollout",
+      "expected_ecus": [
+        "brake_ecu"
+      ],
+      "expected_attributes": {
+        "brake_ecu": [
+          "sw_version",
+          "safety_class",
+          "pre_conditions",
+          "vehicle_state_check",
+          "staged_deployment",
+          "rollback_procedure"
+        ]
+      },
+      "safety_class": "ASIL-C",
+      "region": "EU",
+      "description": "Safety-critical brake system update"
+    },
+    {
+      "id": "ota_030",
+      "category": "infotainment",
+      "complexity": "simple",
+      "prompt": "Push new UI theme to infotainment system for global markets",
+      "expected_ecus": [
+        "infotainment"
+      ],
+      "expected_attributes": {
+        "infotainment": [
+          "sw_version",
+          "deployment_mode",
+          "region"
+        ]
+      },
+      "safety_class": "QM",
+      "region": "GLOBAL",
+      "description": "Simple cosmetic update"
+    },
+    {
+      "id": "ota_031",
+      "category": "infotainment",
+      "complexity": "medium",
+      "prompt": "Update navigation maps and multimedia codecs for infotainment in EU region",
+      "expected_ecus": [
+        "infotainment"
+      ],
+      "expected_attributes": {
+        "infotainment": [
+          "sw_version",
+          "data_packages",
+          "region",
+          "storage_requirements"
+        ]
+      },
+      "safety_class": "QM",
+      "region": "EU",
+      "description": "Data and software update"
+    },
+    {
+      "id": "ota_040",
+      "category": "adas",
+      "complexity": "complex",
+      "prompt": "Deploy lane keeping assist algorithm update with sensor calibration for US vehicles ASIL-B",
+      "expected_ecus": [
+        "adas_lka"
+      ],
+      "expected_attributes": {
+        "adas_lka": [
+          "sw_version",
+          "safety_class",
+          "calibration_required",
+          "pre_conditions",
+          "verification"
+        ]
+      },
+      "safety_class": "ASIL-B",
+      "region": "US",
+      "description": "ADAS algorithm update with calibration"
+    },
+    {
+      "id": "ota_041",
+      "category": "adas",
+      "complexity": "very_complex",
+      "prompt": "Update complete ADAS suite including radar, camera, and lidar fusion for autonomous driving L3",
+      "expected_ecus": [
+        "adas_radar",
+        "adas_camera",
+        "adas_lidar",
+        "adas_fusion"
+      ],
+      "expected_attributes": {
+        "adas_radar": [
+          "sw_version",
+          "safety_class",
+          "synchronization"
+        ],
+        "adas_camera": [
+          "sw_version",
+          "safety_class",
+          "synchronization"
+        ],
+        "adas_lidar": [
+          "sw_version",
+          "safety_class",
+          "synchronization"
+        ],
+        "adas_fusion": [
+          "sw_version",
+          "safety_class",
+          "dependencies"
+        ]
+      },
+      "safety_class": "ASIL-B",
+      "region": "EU",
+      "description": "Full ADAS stack update"
+    },
+    {
+      "id": "ota_050",
+      "category": "powertrain",
+      "complexity": "complex",
+      "prompt": "Update engine control unit with new fuel efficiency calibration ASIL-D",
+      "expected_ecus": [
+        "engine_ecu"
+      ],
+      "expected_attributes": {
+        "engine_ecu": [
+          "sw_version",
+          "safety_class",
+          "calibration_data",
+          "pre_conditions",
+          "rollback_procedure"
+        ]
+      },
+      "safety_class": "ASIL-D",
+      "region": "US",
+      "description": "Engine ECU calibration update"
+    },
+    {
+      "id": "ota_051",
+      "category": "powertrain",
+      "complexity": "very_complex",
+      "prompt": "Deploy electric vehicle battery management and motor control update with thermal monitoring",
+      "expected_ecus": [
+        "battery_ecu",
+        "motor_ecu"
+      ],
+      "expected_attributes": {
+        "battery_ecu": [
+          "sw_version",
+          "safety_class",
+          "thermal_limits",
+          "rollback_procedure"
+        ],
+        "motor_ecu": [
+          "sw_version",
+          "safety_class",
+          "dependencies",
+          "verification"
+        ]
+      },
+      "safety_class": "ASIL-D",
+      "region": "CN",
+      "description": "EV powertrain update"
+    },
+    {
+      "id": "ota_060",
+      "category": "regional",
+      "complexity": "medium",
+      "prompt": "Update telematics for China market with local connectivity protocols and compliance",
+      "expected_ecus": [
+        "telematics"
+      ],
+      "expected_attributes": {
+        "telematics": [
+          "sw_version",
+          "region",
+          "compliance_requirements",
+          "connectivity"
+        ]
+      },
+      "safety_class": "QM",
+      "region": "CN",
+      "description": "China-specific telematics update"
+    },
+    {
+      "id": "ota_061",
+      "category": "regional",
+      "complexity": "medium",
+      "prompt": "Deploy EU eCall emergency system update with GDPR compliance",
+      "expected_ecus": [
+        "emergency_call"
+      ],
+      "expected_attributes": {
+        "emergency_call": [
+          "sw_version",
+          "region",
+          "gdpr_compliance",
+          "testing_required"
+        ]
+      },
+      "safety_class": "ASIL-B",
+      "region": "EU",
+      "description": "EU eCall system update"
+    },
+    {
+      "id": "ota_070",
+      "category": "rollback",
+      "complexity": "complex",
+      "prompt": "Rollback ADAS camera firmware from v3.2.0 to v3.1.5 due to detection issues",
+      "expected_ecus": [
+        "adas_camera"
+      ],
+      "expected_attributes": {
+        "adas_camera": [
+          "sw_version",
+          "rollback_version",
+          "rollback_reason",
+          "safety_class",
+          "verification"
+        ]
+      },
+      "safety_class": "ASIL-B",
+      "region": "US",
+      "description": "Safety-critical rollback scenario"
+    },
+    {
+      "id": "ota_071",
+      "category": "rollback",
+      "complexity": "very_complex",
+      "prompt": "Emergency rollback of multi-ECU powertrain update with coordinated recovery",
+      "expected_ecus": [
+        "engine_ecu",
+        "transmission_ecu"
+      ],
+      "expected_attributes": {
+        "engine_ecu": [
+          "sw_version",
+          "rollback_version",
+          "emergency_mode"
+        ],
+        "transmission_ecu": [
+          "sw_version",
+          "rollback_version",
+          "synchronization"
+        ]
+      },
+      "safety_class": "ASIL-D",
+      "region": "GLOBAL",
+      "description": "Multi-ECU emergency rollback"
+    },
+    {
+      "id": "ota_080",
+      "category": "delta_update",
+      "complexity": "medium",
+      "prompt": "Apply delta patch to infotainment v2.5.0->v2.5.1 to save bandwidth",
+      "expected_ecus": [
+        "infotainment"
+      ],
+      "expected_attributes": {
+        "infotainment": [
+          "sw_version",
+          "delta_patch",
+          "bandwidth_optimization",
+          "checksum_verification"
+        ]
+      },
+      "safety_class": "QM",
+      "region": "US",
+      "description": "Bandwidth-efficient delta update"
+    },
+    {
+      "id": "ota_081",
+      "category": "delta_update",
+      "complexity": "complex",
+      "prompt": "Deploy differential update for ADAS radar with A/B partition switching",
+      "expected_ecus": [
+        "adas_radar"
+      ],
+      "expected_attributes": {
+        "adas_radar": [
+          "sw_version",
+          "delta_patch",
+          "partition_switching",
+          "rollback_partition",
+          "safety_class"
+        ]
+      },
+      "safety_class": "ASIL-B",
+      "region": "EU",
+      "description": "Delta update with A/B partitioning"
+    }
+  ]
+}

@@ -9,3 +9,8 @@ __pycache__/
 *.swo
 conversation_history/
 .venv/
+venv/
+.DS_Store
+*.csv
+paper/
+.claude/

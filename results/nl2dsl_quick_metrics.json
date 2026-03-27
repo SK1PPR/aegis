@@ -1,0 +1,11 @@
+{
+  "system": "nl2dsl-agent",
+  "precision": 47.714313817321546,
+  "recall": 53.588235294117645,
+  "breakage_rate": 5.555555555555555,
+  "avg_latency_ms": 12782.530347506205,
+  "success_rate": 94.44444444444444,
+  "avg_cpu_pct": 0.05,
+  "avg_mem_mb": 336.515625,
+  "safety_compliance": 84.61538461538461
+}

@@ -1,0 +1,1481 @@
+{
+  "system": "nl2dsl-agent",
+  "timestamp": "2026-01-09 10:07:40",
+  "summary": {
+    "total_tests": 18,
+    "precision": 47.714313817321546,
+    "recall": 53.588235294117645,
+    "breakage_rate": 5.555555555555555,
+    "success_rate": 94.44444444444444,
+    "avg_latency_ms": 12782.530347506205,
+    "median_latency_ms": 13094.280004501343,
+    "p95_latency_ms": 28085.780143737793,
+    "p99_latency_ms": 28085.780143737793,
+    "avg_spec_size_kb": 1.0744485294117647,
+    "safety_compliance_rate": 84.61538461538461,
+    "rollback_coverage": 84.61538461538461
+  },
+  "by_category": {
+    "delta_update": {
+      "success_rate": 100.0,
+      "precision": 61.25,
+      "recall": 65.0,
+      "count": 2
+    },
+    "safety_critical": {
+      "success_rate": 100.0,
+      "precision": 32.142857142857146,
+      "recall": 40.0,
+      "count": 2
+    },
+    "regional": {
+      "success_rate": 100.0,
+      "precision": 61.17647058823529,
+      "recall": 65.0,
+      "count": 2
+    },
+    "powertrain": {
+      "success_rate": 100.0,
+      "precision": 31.379310344827584,
+      "recall": 38.0,
+      "count": 2
+    },
+    "multi_ecu": {
+      "success_rate": 100.0,
+      "precision": 31.73913043478261,
+      "recall": 43.333333333333336,
+      "count": 2
+    },
+    "adas": {
+      "success_rate": 100.0,
+      "precision": 31.969111969111967,
+      "recall": 22.166666666666668,
+      "count": 2
+    },
+    "single_ecu": {
+      "success_rate": 100.0,
+      "precision": 62.71929824561403,
+      "recall": 75.0,
+      "count": 2
+    },
+    "infotainment": {
+      "success_rate": 100.0,
+      "precision": 61.05263157894737,
+      "recall": 65.0,
+      "count": 2
+    },
+    "rollback": {
+      "success_rate": 50.0,
+      "precision": 64.28571428571428,
+      "recall": 84.0,
+      "count": 2
+    }
+  },
+  "by_complexity": {
+    "medium": {
+      "success_rate": 100.0,
+      "precision": 62.05830753353973,
+      "recall": 70.0,
+      "count": 5
+    },
+    "very_complex": {
+      "success_rate": 80.0,
+      "precision": 30.27027027027027,
+      "recall": 22.083333333333332,
+      "count": 5
+    },
+    "complex": {
+      "success_rate": 100.0,
+      "precision": 42.944242164631966,
+      "recall": 57.111111111111114,
+      "count": 6
+    },
+    "simple": {
+      "success_rate": 100.0,
+      "precision": 61.05263157894737,
+      "recall": 65.0,
+      "count": 2
+    }
+  },
+  "by_safety_class": {
+    "ASIL-B": {
+      "success_rate": 100.0,
+      "precision": 53.57650463240525,
+      "recall": 59.285714285714285,
+      "count": 7
+    },
+    "ASIL-D": {
+      "success_rate": 75.0,
+      "precision": 22.348111658456485,
+      "recall": 32.0,
+      "count": 4
+    },
+    "ASIL-C": {
+      "success_rate": 100.0,
+      "precision": 60.0,
+      "recall": 60.0,
+      "count": 1
+    },
+    "QM": {
+      "success_rate": 100.0,
+      "precision": 61.812693498452006,
+      "recall": 68.0,
+      "count": 5
+    },
+    "ASIL-A": {
+      "success_rate": 100.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "count": 1
+    }
+  },
+  "detailed_results": [
+    {
+      "test_id": "ota_001",
+      "category": "single_ecu",
+      "complexity": "simple",
+      "prompt": "Update infotainment firmware to version 2.5.1 for US market",
+      "safety_class": "QM",
+      "region": "US",
+      "spec_generated": true,
+      "spec_valid": true,
+      "validation_errors": "",
+      "precision_score": 62.10526315789473,
+      "ecu_precision": 100.0,
+      "attribute_precision": 5.263157894736842,
+      "recall_score": 70.0,
+      "ecu_recall": 100.0,
+      "attribute_recall": 25.0,
+      "safety_checks_present": true,
+      "rollback_procedure_present": true,
+      "pre_conditions_present": true,
+      "generation_time": 11112.720966339111,
+      "retrieval_time": 0.0,
+      "spec_size_bytes": 784,
+      "generated_spec": {
+        "update_package": {
+          "target_ecu": "infotainment",
+          "sw_version": "2.5.1",
+          "package_size_mb": 450,
+          "checksum": "sha256:abc123...",
+          "download_url": "https://ota.example.com/infotainment/v2.5.1",
+          "compression": "zstd"
+        },
+        "pre_conditions": {
+          "battery_level_min": 50,
+          "vehicle_state": "parked",
+          "ignition": "off",
+          "available_storage_mb": 500
+        },
+        "installation": {
+          "method": "A/B",
+          "partition_switch": true,
+          "reboot_required": true,
+          "install_timeout_minutes": 30
+        },
+        "post_conditions": {
+          "verification": {
+            "boot_check": true,
+            "version_validation": true,
+            "functional_test": [
+              "display",
+              "audio",
+              "navigation"
+            ]
+          },
+          "rollback_on_failure": true,
+          "verify_boot": true,
+          "run_diagnostics": true,
+          "report_telemetry": true
+        },
+        "rollback_procedure": {
+          "enabled": true,
+          "max_attempts": 3,
+          "fallback_version": "2.4.0"
+        }
+      },
+      "retrieved_patterns": [],
+      "retrieved_pattern_count": 1
+    },
+    {
+      "test_id": "ota_002",
+      "category": "single_ecu",
+      "complexity": "medium",
+      "prompt": "Deploy ADAS camera software v3.2.0 with pre-condition checks for EU vehicles",
+      "safety_class": "ASIL-B",
+      "region": "EU",
+      "spec_generated": true,
+      "spec_valid": true,
+      "validation_errors": "",
+      "precision_score": 63.33333333333333,
+      "ecu_precision": 100.0,
+      "attribute_precision": 8.333333333333332,
+      "recall_score": 80.0,
+      "ecu_recall": 100.0,
+      "attribute_recall": 50.0,
+      "safety_checks_present": true,
+      "rollback_procedure_present": true,
+      "pre_conditions_present": true,
+      "generation_time": 14396.265029907227,
+      "retrieval_time": 0.0,
+      "spec_size_bytes": 1127,
+      "generated_spec": {
+        "update_package": {
+          "target_ecu": "adas_camera",
+          "sw_version": "3.2.0",
+          "package_size_mb": 120,
+          "checksum": "sha256:def456...",
+          "download_url": "https://ota.example.com/adas/camera/v3.2.0",
+          "signed": true,
+          "signature_verification": "required"
+        },
+        "pre_conditions": {
+          "battery_level_min": 70,
+          "vehicle_state": "parked",
+          "ignition": "off",
+          "safety_checks": {
+            "ecu_health_check": true,
+            "sensor_calibration_valid": true,
+            "no_dtc_codes": true
+          },
+          "available_storage_mb": 150
+        },
+        "installation": {
+          "method": "dual-bank",
+          "partition_switch": true,
+          "reboot_required": true,
+          "install_timeout_minutes": 20,
+          "safety_mode": "enabled",
+          "calibration_required": true
+        },
+        "post_conditions": {
+          "verification": {
+            "boot_check": true,
+            "version_validation": true,
+            "functional_test": [
+              "object_detection",
+              "lane_recognition",
+              "distance_measurement"
+            ],
+            "safety_validation": true,
+            "calibration_check": true
+          },
+          "rollback_on_failure": true,
+          "safety_diagnostics": "mandatory",
+          "verify_boot": true,
+          "run_diagnostics": true,
+          "report_telemetry": true
+        },
+        "rollback_procedure": {
+          "enabled": true,
+          "max_attempts": 2,
+          "fallback_version": "3.1.5",
+          "safety_fallback": "limp_mode"
+        }
+      },
+      "retrieved_patterns": [],
+      "retrieved_pattern_count": 2
+    },
+    {
+      "test_id": "ota_010",
+      "category": "multi_ecu",
+      "complexity": "complex",
+      "prompt": "Update both ADAS radar and camera ECUs simultaneously for China market with coordinated rollout",
+      "safety_class": "ASIL-B",
+      "region": "CN",
+      "spec_generated": true,
+      "spec_valid": true,
+      "validation_errors": "",
+      "precision_score": 63.47826086956522,
+      "ecu_precision": 100.0,
+      "attribute_precision": 8.695652173913043,
+      "recall_score": 86.66666666666667,
+      "ecu_recall": 100.0,
+      "attribute_recall": 66.66666666666666,
+      "safety_checks_present": true,
+      "rollback_procedure_present": true,
+      "pre_conditions_present": true,
+      "generation_time": 13412.519216537476,
+      "retrieval_time": 0.0,
+      "spec_size_bytes": 1199,
+      "generated_spec": {
+        "update_package": {
+          "target_ecus": [
+            "adas_radar",
+            "adas_camera"
+          ],
+          "sw_version": "3.3.0",
+          "package_size_mb": 250,
+          "checksum": "sha256:jkl012...",
+          "download_url": "https://ota.example.com/adas/multi/v3.3.0",
+          "deployment_order": [
+            "adas_radar",
+            "adas_camera"
+          ],
+          "synchronized": true
+        },
+        "pre_conditions": {
+          "battery_level_min": 75,
+          "vehicle_state": "parked",
+          "ignition": "off",
+          "safety_checks": {
+            "all_ecus_healthy": true,
+            "sensors_calibrated": true,
+            "no_dtc_codes": true
+          },
+          "available_storage_mb": 300,
+          "coordination_check": true
+        },
+        "installation": {
+          "method": "A/B",
+          "partition_switch": true,
+          "reboot_required": true,
+          "install_timeout_minutes": 45,
+          "deployment_strategy": "sequential",
+          "inter_ecu_sync": true,
+          "rollback_coordination": true
+        },
+        "post_conditions": {
+          "verification": {
+            "boot_check": true,
+            "version_validation": true,
+            "functional_test": [
+              "radar_tracking",
+              "camera_detection",
+              "sensor_fusion"
+            ],
+            "safety_validation": true,
+            "calibration_check": true,
+            "inter_ecu_communication": true
+          },
+          "rollback_on_failure": true,
+          "coordinated_rollback": true
+        },
+        "rollback_procedure": {
+          "enabled": true,
+          "max_attempts": 2,
+          "fallback_version": "3.2.0",
+          "coordinated": true,
+          "rollback_order": [
+            "adas_camera",
+            "adas_radar"
+          ]
+        }
+      },
+      "retrieved_patterns": [],
+      "retrieved_pattern_count": 1
+    },
+    {
+      "test_id": "ota_011",
+      "category": "multi_ecu",
+      "complexity": "very_complex",
+      "prompt": "Orchestrate gateway, telematics, and infotainment update with dependency management",
+      "safety_class": "ASIL-A",
+      "region": "US",
+      "spec_generated": true,
+      "spec_valid": true,
+      "validation_errors": "",
+      "precision_score": 0.0,
+      "ecu_precision": 0.0,
+      "attribute_precision": 0.0,
+      "recall_score": 0.0,
+      "ecu_recall": 0.0,
+      "attribute_recall": 0.0,
+      "safety_checks_present": false,
+      "rollback_procedure_present": false,
+      "pre_conditions_present": false,
+      "generation_time": 28085.780143737793,
+      "retrieval_time": 0.0,
+      "spec_size_bytes": 2928,
+      "generated_spec": {
+        "gateway": {
+          "update_package": {
+            "name": "gateway_update_package_v6.0.0",
+            "size_mb": 100,
+            "checksum": "sha256:gateway_checksum_v6.0.0",
+            "signature": "RSA2048:gateway_signature_v6.0.0",
+            "compression": "zstd",
+            "target_ecu": "gateway",
+            "sw_version": "6.0.0",
+            "package_size_mb": 100,
+            "download_url": "https://ota.example.com/gateway/v6.0.0",
+            "dependencies": [
+              "telematics_update_package_v3.0.0",
+              "infotainment_update_package_v8.0.0"
+            ]
+          },
+          "pre_conditions": {
+            "battery_level_min": 60,
+            "vehicle_state": "parked",
+            "ignition": "off",
+            "all_ecus_responsive": true,
+            "available_storage_mb": 120
+          },
+          "installation": {
+            "method": "A/B",
+            "partition_switch": true,
+            "reboot_required": true,
+            "install_timeout_minutes": 20,
+            "network_isolation": true
+          },
+          "post_conditions": {
+            "verification": {
+              "boot_check": true,
+              "version_validation": true,
+              "functional_test": [
+                "can_bus",
+                "routing",
+                "security"
+              ],
+              "ecu_communication": true
+            },
+            "rollback_on_failure": true,
+            "safety_validation": true,
+            "verify_boot": true,
+            "run_diagnostics": true,
+            "report_telemetry": true
+          },
+          "rollback_procedure": {
+            "enabled": true,
+            "max_attempts": 2,
+            "fallback_version": "5.9.0"
+          }
+        },
+        "telematics": {
+          "update_package": {
+            "name": "telematics_update_package_v3.0.0",
+            "size_mb": 50,
+            "checksum": "sha256:telematics_checksum_v3.0.0",
+            "signature": "RSA2048:telematics_signature_v3.0.0",
+            "compression": "lzma",
+            "target_ecu": "telematics",
+            "sw_version": "3.0.0",
+            "package_size_mb": 50,
+            "download_url": "https://ota.example.com/telematics/v3.0.0",
+            "dependencies": [
+              "infotainment_update_package_v8.0.0"
+            ]
+          },
+          "pre_conditions": {
+            "battery_level_min": 60,
+            "vehicle_state": "parked",
+            "ignition": "off",
+            "all_ecus_responsive": true,
+            "available_storage_mb": 70
+          },
+          "installation": {
+            "method": "dual-bank",
+            "backup_current": true,
+            "verify_integrity": true,
+            "reboot_required": true,
+            "install_timeout_minutes": 15
+          },
+          "post_conditions": {
+            "verify_boot": true,
+            "run_diagnostics": true,
+            "report_telemetry": true,
+            "safety_validation": true
+          },
+          "rollback_procedure": {
+            "enabled": true,
+            "max_attempts": 3,
+            "fallback_version": "2.9.0"
+          }
+        },
+        "infotainment": {
+          "update_package": {
+            "name": "infotainment_update_package_v8.0.0",
+            "size_mb": 1500,
+            "checksum": "sha256:infotainment_checksum_v8.0.0",
+            "signature": "RSA2048:infotainment_signature_v8.0.0",
+            "compression": "bsdiff",
+            "target_ecu": "infotainment",
+            "sw_version": "8.0.0",
+            "package_size_mb": 1500,
+            "download_url": "https://ota.example.com/infotainment/v8.0.0",
+            "dependencies": []
+          },
+          "pre_conditions": {
+            "battery_level_min": 60,
+            "vehicle_state": "parked",
+            "ignition": "off",
+            "all_ecus_responsive": true,
+            "available_storage_mb": 1600
+          },
+          "installation": {
+            "method": "keep_backup_bank",
+            "backup_current": true,
+            "verify_integrity": true,
+            "reboot_required": true,
+            "install_timeout_minutes": 45
+          },
+          "post_conditions": {
+            "verify_boot": true,
+            "run_diagnostics": true,
+            "report_telemetry": true,
+            "safety_validation": true
+          },
+          "rollback_procedure": {
+            "enabled": true,
+            "max_attempts": 1,
+            "fallback_version": "7.9.0"
+          }
+        }
+      },
+      "retrieved_patterns": [],
+      "retrieved_pattern_count": 1
+    },
+    {
+      "test_id": "ota_020",
+      "category": "safety_critical",
+      "complexity": "complex",
+      "prompt": "Update powertrain control unit ASIL-D with full safety verification and rollback capability",
+      "safety_class": "ASIL-D",
+      "region": "US",
+      "spec_generated": true,
+      "spec_valid": true,
+      "validation_errors": "",
+      "precision_score": 4.285714285714286,
+      "ecu_precision": 0.0,
+      "attribute_precision": 10.714285714285714,
+      "recall_score": 20.0,
+      "ecu_recall": 0.0,
+      "attribute_recall": 50.0,
+      "safety_checks_present": true,
+      "rollback_procedure_present": true,
+      "pre_conditions_present": true,
+      "generation_time": 13809.698104858398,
+      "retrieval_time": 0.0,
+      "spec_size_bytes": 1442,
+      "generated_spec": {
+        "update_package": {
+          "target_ecu": "powertrain_control_unit",
+          "sw_version": "4.2.0",
+          "package_size_mb": 80,
+          "checksum": "sha256:ghi789...",
+          "download_url": "https://ota.example.com/powertrain/engine/v4.2.0",
+          "signed": true,
+          "signature_verification": "required",
+          "encryption": "AES-256"
+        },
+        "pre_conditions": {
+          "battery_level_min": 85,
+          "vehicle_state": "parked",
+          "ignition": "off",
+          "engine_temperature": "normal",
+          "safety_checks": {
+            "ecu_health_check": true,
+            "sensor_validation": true,
+            "no_critical_dtc": true,
+            "fuel_system_check": true
+          },
+          "available_storage_mb": 100,
+          "service_mode": "enabled"
+        },
+        "installation": {
+          "method": "dual-bank",
+          "partition_switch": true,
+          "reboot_required": true,
+          "install_timeout_minutes": 15,
+          "safety_mode": "maximum",
+          "calibration_data": {
+            "fuel_maps": true,
+            "ignition_timing": true,
+            "emissions_control": true
+          }
+        },
+        "post_conditions": {
+          "verification": {
+            "boot_check": true,
+            "version_validation": true,
+            "functional_test": [
+              "idle_stability",
+              "throttle_response",
+              "fuel_injection",
+              "emissions"
+            ],
+            "safety_validation": "comprehensive",
+            "calibration_verification": "mandatory",
+            "emissions_compliance": true
+          },
+          "rollback_on_failure": true,
+          "safety_diagnostics": "comprehensive",
+          "test_drive_required": false,
+          "verify_boot": true,
+          "run_diagnostics": true,
+          "report_telemetry": true
+        },
+        "rollback_procedure": {
+          "enabled": true,
+          "max_attempts": 1,
+          "fallback_version": "4.1.0",
+          "safety_fallback": "emergency_mode",
+          "automatic_rollback": true
+        }
+      },
+      "retrieved_patterns": [],
+      "retrieved_pattern_count": 1
+    },
+    {
+      "test_id": "ota_021",
+      "category": "safety_critical",
+      "complexity": "very_complex",
+      "prompt": "Deploy brake control ECU update ASIL-C with vehicle state validation and staged rollout",
+      "safety_class": "ASIL-C",
+      "region": "EU",
+      "spec_generated": true,
+      "spec_valid": true,
+      "validation_errors": "",
+      "precision_score": 60.0,
+      "ecu_precision": 100.0,
+      "attribute_precision": 0.0,
+      "recall_score": 60.0,
+      "ecu_recall": 100.0,
+      "attribute_recall": 0.0,
+      "safety_checks_present": true,
+      "rollback_procedure_present": true,
+      "pre_conditions_present": true,
+      "generation_time": 13212.11314201355,
+      "retrieval_time": 0.0,
+      "spec_size_bytes": 765,
+      "generated_spec": {
+        "update_package": {
+          "name": "brake_ecu_v4.2.0_staged",
+          "size_mb": 12,
+          "checksum": "sha384:brake789...",
+          "signature": "RSA4096:brake987...",
+          "compression": "lzma",
+          "encryption": "AES256_GCM"
+        },
+        "pre_conditions": {
+          "battery_level_min": 85,
+          "vehicle_state": "parked_brake_engaged",
+          "network_available": true,
+          "ignition_off": true,
+          "no_dtc_codes": true,
+          "brake_fluid_ok": true
+        },
+        "installation": {
+          "target_bank": "bank_1",
+          "verify_inactive_bank": true,
+          "write_with_verification": true,
+          "switch_bank_on_success": true,
+          "reboot_required": true,
+          "keep_backup_bank": true
+        },
+        "post_conditions": {
+          "verify_boot": true,
+          "run_diagnostics": true,
+          "report_telemetry": true,
+          "safety_validation": true,
+          "verify_boot_from_new_bank": true,
+          "run_brake_diagnostics": true,
+          "abs_test": true
+        }
+      },
+      "retrieved_patterns": [],
+      "retrieved_pattern_count": 1
+    },
+    {
+      "test_id": "ota_030",
+      "category": "infotainment",
+      "complexity": "simple",
+      "prompt": "Push new UI theme to infotainment system for global markets",
+      "safety_class": "QM",
+      "region": "GLOBAL",
+      "spec_generated": true,
+      "spec_valid": true,
+      "validation_errors": "",
+      "precision_score": 60.0,
+      "ecu_precision": 100.0,
+      "attribute_precision": 0.0,
+      "recall_score": 60.0,
+      "ecu_recall": 100.0,
+      "attribute_recall": 0.0,
+      "safety_checks_present": true,
+      "rollback_procedure_present": true,
+      "pre_conditions_present": true,
+      "generation_time": 12738.67416381836,
+      "retrieval_time": 0.0,
+      "spec_size_bytes": 553,
+      "generated_spec": {
+        "update_package": {
+          "name": "infotainment_global_ui_theme_vX.Y.Z",
+          "size_mb": 1400,
+          "checksum": "sha256:newtheme123...",
+          "signature": "RSA2048:newtheme456...",
+          "compression": "zstd"
+        },
+        "pre_conditions": {
+          "battery_level_min": 50,
+          "vehicle_state": "parked",
+          "network_available": true,
+          "disk_space_mb": 3000
+        },
+        "installation": {
+          "target_partition": "partition_B",
+          "backup_current": true,
+          "verify_integrity": true,
+          "reboot_required": true
+        },
+        "post_conditions": {
+          "verify_boot": true,
+          "run_diagnostics": true,
+          "localization_test": true,
+          "report_telemetry": true
+        }
+      },
+      "retrieved_patterns": [],
+      "retrieved_pattern_count": 1
+    },
+    {
+      "test_id": "ota_031",
+      "category": "infotainment",
+      "complexity": "medium",
+      "prompt": "Update navigation maps and multimedia codecs for infotainment in EU region",
+      "safety_class": "QM",
+      "region": "EU",
+      "spec_generated": true,
+      "spec_valid": true,
+      "validation_errors": "",
+      "precision_score": 62.10526315789473,
+      "ecu_precision": 100.0,
+      "attribute_precision": 5.263157894736842,
+      "recall_score": 70.0,
+      "ecu_recall": 100.0,
+      "attribute_recall": 25.0,
+      "safety_checks_present": true,
+      "rollback_procedure_present": true,
+      "pre_conditions_present": true,
+      "generation_time": 7377.663850784302,
+      "retrieval_time": 0.0,
+      "spec_size_bytes": 611,
+      "generated_spec": {
+        "update_package": {
+          "name": "infotainment_eu_maps_codecs_v2.6.0",
+          "size_mb": 800,
+          "checksum": "sha256:eu789...",
+          "signature": "RSA2048:eu101112...",
+          "compression": "zstd",
+          "content": [
+            "navigation_maps",
+            "multimedia_codecs"
+          ],
+          "region": "EU"
+        },
+        "pre_conditions": {
+          "battery_level_min": 50,
+          "vehicle_state": "parked",
+          "network_available": true,
+          "disk_space_mb": 1600
+        },
+        "installation": {
+          "target_partition": "partition_B",
+          "backup_current": true,
+          "verify_integrity": true,
+          "reboot_required": true
+        },
+        "post_conditions": {
+          "verify_boot": true,
+          "run_diagnostics": true,
+          "localization_test": true,
+          "report_telemetry": true
+        }
+      },
+      "retrieved_patterns": [],
+      "retrieved_pattern_count": 1
+    },
+    {
+      "test_id": "ota_040",
+      "category": "adas",
+      "complexity": "complex",
+      "prompt": "Deploy lane keeping assist algorithm update with sensor calibration for US vehicles ASIL-B",
+      "safety_class": "ASIL-B",
+      "region": "US",
+      "spec_generated": true,
+      "spec_valid": true,
+      "validation_errors": "",
+      "precision_score": 2.857142857142857,
+      "ecu_precision": 0.0,
+      "attribute_precision": 7.142857142857142,
+      "recall_score": 16.000000000000004,
+      "ecu_recall": 0.0,
+      "attribute_recall": 40.0,
+      "safety_checks_present": true,
+      "rollback_procedure_present": true,
+      "pre_conditions_present": true,
+      "generation_time": 11093.153953552246,
+      "retrieval_time": 0.0,
+      "spec_size_bytes": 1062,
+      "generated_spec": {
+        "update_package": {
+          "target_ecu": "adas_camera",
+          "sw_version": "3.1.5",
+          "rollback_operation": true,
+          "emergency_mode": true,
+          "package_size_mb": 0,
+          "rollback_reason": "detection_failure",
+          "name": "lane_keeping_assist_v3.1.5",
+          "size_mb": 120,
+          "checksum": "sha256:...",
+          "signature": "RSA2048:...",
+          "compression": "zstd"
+        },
+        "pre_conditions": {
+          "battery_level_min": 30,
+          "vehicle_state": "parked_engine_off",
+          "network_available": true,
+          "failure_detected": false
+        },
+        "installation": {
+          "method": "dual-bank",
+          "target_partition": "bank_1",
+          "backup_current": true,
+          "verify_integrity": true,
+          "reboot_required": true,
+          "install_timeout_minutes": 15,
+          "emergency_mode": false
+        },
+        "post_conditions": {
+          "verify_boot": true,
+          "run_diagnostics": true,
+          "report_telemetry": true,
+          "safety_validation": true,
+          "verification": {
+            "boot_check": true,
+            "version_validation": true,
+            "basic_functionality": true,
+            "safe_mode_enabled": false
+          },
+          "diagnostics_log": true,
+          "failure_report": true
+        },
+        "rollback_procedure": {
+          "enabled": true,
+          "emergency": false,
+          "fallback_version": "3.1.4",
+          "limp_mode": "enabled"
+        }
+      },
+      "retrieved_patterns": [],
+      "retrieved_pattern_count": 1
+    },
+    {
+      "test_id": "ota_041",
+      "category": "adas",
+      "complexity": "very_complex",
+      "prompt": "Update complete ADAS suite including radar, camera, and lidar fusion for autonomous driving L3",
+      "safety_class": "ASIL-B",
+      "region": "EU",
+      "spec_generated": true,
+      "spec_valid": true,
+      "validation_errors": "",
+      "precision_score": 61.08108108108108,
+      "ecu_precision": 100.0,
+      "attribute_precision": 2.7027027027027026,
+      "recall_score": 28.333333333333332,
+      "ecu_recall": 25.0,
+      "attribute_recall": 33.33333333333333,
+      "safety_checks_present": true,
+      "rollback_procedure_present": true,
+      "pre_conditions_present": true,
+      "generation_time": 14576.222896575928,
+      "retrieval_time": 0.0,
+      "spec_size_bytes": 1510,
+      "generated_spec": {
+        "update_package": {
+          "name": "complete_adas_suite_v3.3.0",
+          "size_mb": 250,
+          "checksum": "sha256:123abc...",
+          "signature": "RSA4096:abc123...",
+          "compression": "zstd",
+          "target_ecu": "adas_fusion",
+          "sw_version": "3.3.0",
+          "package_size_mb": 250,
+          "download_url": "https://ota.example.com/adas/complete_suite/v3.3.0",
+          "signed": true,
+          "signature_verification": "required"
+        },
+        "pre_conditions": {
+          "battery_level_min": 70,
+          "vehicle_state": "parked",
+          "ignition": "off",
+          "network_available": true,
+          "safety_checks": {
+            "ecu_health_check": true,
+            "sensor_calibration_valid": true,
+            "no_dtc_codes": true
+          },
+          "available_storage_mb": 300,
+          "current_version_verified": true,
+          "safety_diagnostics_passed": true
+        },
+        "installation": {
+          "method": "dual-bank",
+          "partition_switch": true,
+          "reboot_required": true,
+          "install_timeout_minutes": 30,
+          "safety_mode": "enabled",
+          "calibration_required": true,
+          "apply_delta_patch": false,
+          "target_partition": "bank_1",
+          "backup_critical_configs": true,
+          "atomic_update": true
+        },
+        "post_conditions": {
+          "verify_boot": true,
+          "run_diagnostics": true,
+          "calibration_check": true,
+          "report_telemetry": true,
+          "safety_validation": true,
+          "verification": {
+            "boot_check": true,
+            "version_validation": true,
+            "functional_test": [
+              "object_detection",
+              "lane_recognition",
+              "distance_measurement"
+            ],
+            "safety_validation": true,
+            "calibration_check": true
+          },
+          "rollback_on_failure": true,
+          "safety_diagnostics": "mandatory"
+        },
+        "rollback_procedure": {
+          "enabled": true,
+          "max_attempts": 3,
+          "fallback_version": "3.2.0",
+          "safety_fallback": "limp_mode"
+        }
+      },
+      "retrieved_patterns": [],
+      "retrieved_pattern_count": 2
+    },
+    {
+      "test_id": "ota_050",
+      "category": "powertrain",
+      "complexity": "complex",
+      "prompt": "Update engine control unit with new fuel efficiency calibration ASIL-D",
+      "safety_class": "ASIL-D",
+      "region": "US",
+      "spec_generated": true,
+      "spec_valid": true,
+      "validation_errors": "",
+      "precision_score": 62.75862068965517,
+      "ecu_precision": 100.0,
+      "attribute_precision": 6.896551724137931,
+      "recall_score": 76.0,
+      "ecu_recall": 100.0,
+      "attribute_recall": 40.0,
+      "safety_checks_present": true,
+      "rollback_procedure_present": true,
+      "pre_conditions_present": true,
+      "generation_time": 13094.280004501343,
+      "retrieval_time": 0.0,
+      "spec_size_bytes": 1468,
+      "generated_spec": {
+        "update_package": {
+          "target_ecu": "engine_ecu",
+          "sw_version": "4.2.0",
+          "package_size_mb": 82,
+          "checksum": "sha256:new_checksum_value...",
+          "download_url": "https://ota.example.com/powertrain/engine/v4.2.0",
+          "signed": true,
+          "signature_verification": "required",
+          "encryption": "AES-256"
+        },
+        "pre_conditions": {
+          "battery_level_min": 85,
+          "vehicle_state": "parked",
+          "ignition": "off",
+          "engine_temperature": "normal",
+          "safety_checks": {
+            "ecu_health_check": true,
+            "sensor_validation": true,
+            "no_critical_dtc": true,
+            "fuel_system_check": true
+          },
+          "available_storage_mb": 100,
+          "service_mode": "enabled"
+        },
+        "installation": {
+          "method": "dual-bank",
+          "partition_switch": true,
+          "reboot_required": true,
+          "install_timeout_minutes": 15,
+          "safety_mode": "maximum",
+          "calibration_data": {
+            "fuel_maps": true,
+            "ignition_timing": true,
+            "emissions_control": true
+          }
+        },
+        "post_conditions": {
+          "verify_boot": true,
+          "run_diagnostics": true,
+          "report_telemetry": true,
+          "safety_validation": true,
+          "verification": {
+            "boot_check": true,
+            "version_validation": true,
+            "functional_test": [
+              "idle_stability",
+              "throttle_response",
+              "fuel_injection",
+              "emissions"
+            ],
+            "safety_validation": "comprehensive",
+            "calibration_verification": "mandatory",
+            "emissions_compliance": true
+          },
+          "rollback_on_failure": true,
+          "safety_diagnostics": "comprehensive",
+          "test_drive_required": false
+        },
+        "rollback_procedure": {
+          "enabled": true,
+          "max_attempts": 1,
+          "fallback_version": "4.1.0",
+          "safety_fallback": "emergency_mode",
+          "automatic_rollback": true
+        }
+      },
+      "retrieved_patterns": [],
+      "retrieved_pattern_count": 1
+    },
+    {
+      "test_id": "ota_051",
+      "category": "powertrain",
+      "complexity": "very_complex",
+      "prompt": "Deploy electric vehicle battery management and motor control update with thermal monitoring",
+      "safety_class": "ASIL-D",
+      "region": "CN",
+      "spec_generated": true,
+      "spec_valid": true,
+      "validation_errors": "",
+      "precision_score": 0.0,
+      "ecu_precision": 0.0,
+      "attribute_precision": 0.0,
+      "recall_score": 0.0,
+      "ecu_recall": 0.0,
+      "attribute_recall": 0.0,
+      "safety_checks_present": true,
+      "rollback_procedure_present": true,
+      "pre_conditions_present": true,
+      "generation_time": 14432.101964950562,
+      "retrieval_time": 0.0,
+      "spec_size_bytes": 1121,
+      "generated_spec": {
+        "update_package": [
+          {
+            "name": "motor_ecu_v5.4.0",
+            "size_mb": 9,
+            "checksum": "sha384:motor910...",
+            "signature": "ECDSA_P384:motor1112...",
+            "compression": "lzma",
+            "encryption": "AES256_GCM"
+          },
+          {
+            "name": "battery_bms_v6.3.0",
+            "size_mb": 10,
+            "checksum": "sha512:batt1314...",
+            "signature": "ECDSA_P384:batt1516...",
+            "compression": "lzma",
+            "encryption": "AES256_GCM"
+          }
+        ],
+        "pre_conditions": {
+          "battery_level_min": 95,
+          "vehicle_state": "parked_charging",
+          "network_available": true,
+          "ignition_off": true,
+          "no_dtc_codes": true,
+          "motor_temp_normal": true,
+          "battery_temp_normal": true,
+          "soc_within_range": true
+        },
+        "installation": {
+          "target_bank": "bank_1",
+          "verify_inactive_bank": true,
+          "write_with_verification": true,
+          "switch_bank_on_success": true,
+          "reboot_required": true,
+          "keep_backup_bank": true
+        },
+        "post_conditions": {
+          "verify_boot_from_new_bank": true,
+          "run_motor_diagnostics": true,
+          "torque_control_test": true,
+          "efficiency_test": true,
+          "run_bms_diagnostics": true,
+          "cell_balancing_test": true,
+          "thermal_monitoring_test": true,
+          "report_telemetry": true,
+          "safety_validation_asil_d": true,
+          "verify_boot": true,
+          "run_diagnostics": true
+        }
+      },
+      "retrieved_patterns": [],
+      "retrieved_pattern_count": 2
+    },
+    {
+      "test_id": "ota_060",
+      "category": "regional",
+      "complexity": "medium",
+      "prompt": "Update telematics for China market with local connectivity protocols and compliance",
+      "safety_class": "QM",
+      "region": "CN",
+      "spec_generated": true,
+      "spec_valid": true,
+      "validation_errors": "",
+      "precision_score": 62.35294117647059,
+      "ecu_precision": 100.0,
+      "attribute_precision": 5.88235294117647,
+      "recall_score": 70.0,
+      "ecu_recall": 100.0,
+      "attribute_recall": 25.0,
+      "safety_checks_present": true,
+      "rollback_procedure_present": true,
+      "pre_conditions_present": true,
+      "generation_time": 8731.350898742676,
+      "retrieval_time": 0.0,
+      "spec_size_bytes": 903,
+      "generated_spec": {
+        "update_package": {
+          "target_ecu": "telematics",
+          "sw_version": "1.8.0",
+          "package_size_mb": 200,
+          "checksum": "sha256:mno345...",
+          "download_url": "https://ota.cn.example.com/telematics/v1.8.0",
+          "regional_compliance": {
+            "data_localization": true,
+            "connectivity_protocols": [
+              "4G",
+              "5G"
+            ],
+            "local_services": true
+          }
+        },
+        "pre_conditions": {
+          "battery_level_min": 50,
+          "vehicle_state": "parked",
+          "network_connectivity": "stable",
+          "available_storage_mb": 250
+        },
+        "installation": {
+          "method": "single-bank",
+          "reboot_required": true,
+          "install_timeout_minutes": 25,
+          "network_required": true,
+          "regional_config": true
+        },
+        "post_conditions": {
+          "verification": {
+            "boot_check": true,
+            "version_validation": true,
+            "functional_test": [
+              "network_connectivity",
+              "gps",
+              "remote_services"
+            ],
+            "regional_compliance_check": true
+          },
+          "rollback_on_failure": true
+        },
+        "rollback_procedure": {
+          "enabled": true,
+          "max_attempts": 3,
+          "fallback_version": "1.7.5"
+        }
+      },
+      "retrieved_patterns": [],
+      "retrieved_pattern_count": 1
+    },
+    {
+      "test_id": "ota_061",
+      "category": "regional",
+      "complexity": "medium",
+      "prompt": "Deploy EU eCall emergency system update with GDPR compliance",
+      "safety_class": "ASIL-B",
+      "region": "EU",
+      "spec_generated": true,
+      "spec_valid": true,
+      "validation_errors": "",
+      "precision_score": 60.0,
+      "ecu_precision": 100.0,
+      "attribute_precision": 0.0,
+      "recall_score": 60.0,
+      "ecu_recall": 100.0,
+      "attribute_recall": 0.0,
+      "safety_checks_present": true,
+      "rollback_procedure_present": true,
+      "pre_conditions_present": true,
+      "generation_time": 7135.325908660889,
+      "retrieval_time": 0.0,
+      "spec_size_bytes": 671,
+      "generated_spec": {
+        "update_package": {
+          "name": "ecall_v3.5.1_eu",
+          "size_mb": 85,
+          "checksum": "sha256:ecall789...",
+          "signature": "RSA4096:ecall101112...",
+          "compression": "zstd"
+        },
+        "pre_conditions": {
+          "battery_level_min": 70,
+          "vehicle_state": "parked",
+          "network_available": true,
+          "gps_available": true,
+          "lte_signal_strength_ok": true
+        },
+        "installation": {
+          "target_partition": "partition_B",
+          "backup_current": true,
+          "verify_integrity": true,
+          "reboot_required": true
+        },
+        "post_conditions": {
+          "verify_boot": true,
+          "run_diagnostics": true,
+          "run_ecall_diagnostics": true,
+          "gps_test": true,
+          "lte_connectivity_test": true,
+          "gdpr_compliance_check": true,
+          "report_telemetry": true,
+          "safety_validation": true
+        }
+      },
+      "retrieved_patterns": [],
+      "retrieved_pattern_count": 1
+    },
+    {
+      "test_id": "ota_070",
+      "category": "rollback",
+      "complexity": "complex",
+      "prompt": "Rollback ADAS camera firmware from v3.2.0 to v3.1.5 due to detection issues",
+      "safety_class": "ASIL-B",
+      "region": "US",
+      "spec_generated": true,
+      "spec_valid": true,
+      "validation_errors": "",
+      "precision_score": 64.28571428571428,
+      "ecu_precision": 100.0,
+      "attribute_precision": 10.714285714285714,
+      "recall_score": 84.0,
+      "ecu_recall": 100.0,
+      "attribute_recall": 60.0,
+      "safety_checks_present": true,
+      "rollback_procedure_present": true,
+      "pre_conditions_present": true,
+      "generation_time": 10387.0267868042,
+      "retrieval_time": 0.0,
+      "spec_size_bytes": 1043,
+      "generated_spec": {
+        "update_package": {
+          "target_ecu": "adas_camera",
+          "sw_version": "3.1.5",
+          "rollback_operation": true,
+          "emergency_mode": true,
+          "package_size_mb": 0,
+          "checksum": "sha256:...",
+          "signature": "RSA2048:...",
+          "compression": "bsdiff",
+          "rollback_reason": "detection_failure"
+        },
+        "pre_conditions": {
+          "battery_level_min": 30,
+          "vehicle_state": "any",
+          "network_available": true,
+          "failure_detected": true
+        },
+        "installation": {
+          "method": "dual-bank",
+          "target_partition": "bank_1",
+          "backup_current": true,
+          "verify_integrity": true,
+          "partition_switch": true,
+          "switch_to_backup": true,
+          "reboot_required": true,
+          "install_timeout_minutes": 5,
+          "emergency_mode": true
+        },
+        "post_conditions": {
+          "verify_boot": true,
+          "run_diagnostics": true,
+          "report_telemetry": true,
+          "safety_validation": true,
+          "verification": {
+            "boot_check": true,
+            "version_validation": true,
+            "basic_functionality": true,
+            "safe_mode_enabled": true
+          },
+          "diagnostics_log": true,
+          "failure_report": true
+        },
+        "rollback_procedure": {
+          "enabled": true,
+          "emergency": true,
+          "fallback_version": "3.1.5",
+          "limp_mode": "enabled"
+        }
+      },
+      "retrieved_patterns": [],
+      "retrieved_pattern_count": 1
+    },
+    {
+      "test_id": "ota_071",
+      "category": "rollback",
+      "complexity": "very_complex",
+      "prompt": "Emergency rollback of multi-ECU powertrain update with coordinated recovery",
+      "safety_class": "ASIL-D",
+      "region": "GLOBAL",
+      "spec_generated": false,
+      "spec_valid": false,
+      "validation_errors": "'list' object has no attribute 'lower'",
+      "precision_score": 0.0,
+      "ecu_precision": 0.0,
+      "attribute_precision": 0.0,
+      "recall_score": 0.0,
+      "ecu_recall": 0.0,
+      "attribute_recall": 0.0,
+      "safety_checks_present": false,
+      "rollback_procedure_present": false,
+      "pre_conditions_present": false,
+      "generation_time": 15279.810190200806,
+      "retrieval_time": 0.0,
+      "spec_size_bytes": 0,
+      "generated_spec": {},
+      "retrieved_patterns": [],
+      "retrieved_pattern_count": 0
+    },
+    {
+      "test_id": "ota_080",
+      "category": "delta_update",
+      "complexity": "medium",
+      "prompt": "Apply delta patch to infotainment v2.5.0->v2.5.1 to save bandwidth",
+      "safety_class": "QM",
+      "region": "US",
+      "spec_generated": true,
+      "spec_valid": true,
+      "validation_errors": "",
+      "precision_score": 62.5,
+      "ecu_precision": 100.0,
+      "attribute_precision": 6.25,
+      "recall_score": 70.0,
+      "ecu_recall": 100.0,
+      "attribute_recall": 25.0,
+      "safety_checks_present": true,
+      "rollback_procedure_present": true,
+      "pre_conditions_present": true,
+      "generation_time": 10315.52529335022,
+      "retrieval_time": 0.0,
+      "spec_size_bytes": 713,
+      "generated_spec": {
+        "update_package": {
+          "target_ecu": "infotainment",
+          "sw_version": "2.5.1",
+          "package_size_mb": 50,
+          "checksum": "sha256:abc123...",
+          "download_url": "https://ota.example.com/infotainment/v2.5.1",
+          "compression": "bsdiff"
+        },
+        "pre_conditions": {
+          "battery_level_min": 50,
+          "vehicle_state": "parked",
+          "ignition": "off",
+          "available_storage_mb": 500
+        },
+        "installation": {
+          "method": "A/B",
+          "partition_switch": true,
+          "reboot_required": true,
+          "install_timeout_minutes": 30
+        },
+        "post_conditions": {
+          "verification": {
+            "boot_check": true,
+            "version_validation": true,
+            "functional_test": [
+              "display",
+              "audio",
+              "navigation"
+            ]
+          },
+          "rollback_on_failure": true
+        },
+        "rollback_procedure": {
+          "enabled": true,
+          "max_attempts": 3,
+          "fallback_version": "2.5.0"
+        }
+      },
+      "retrieved_patterns": [],
+      "retrieved_pattern_count": 1
+    },
+    {
+      "test_id": "ota_081",
+      "category": "delta_update",
+      "complexity": "complex",
+      "prompt": "Deploy differential update for ADAS radar with A/B partition switching",
+      "safety_class": "ASIL-B",
+      "region": "EU",
+      "spec_generated": true,
+      "spec_valid": true,
+      "validation_errors": "",
+      "precision_score": 60.0,
+      "ecu_precision": 100.0,
+      "attribute_precision": 0.0,
+      "recall_score": 60.0,
+      "ecu_recall": 100.0,
+      "attribute_recall": 0.0,
+      "safety_checks_present": true,
+      "rollback_procedure_present": true,
+      "pre_conditions_present": true,
+      "generation_time": 10895.313739776611,
+      "retrieval_time": 0.0,
+      "spec_size_bytes": 804,
+      "generated_spec": {
+        "update_package": {
+          "name": "adas_radar_diff_v3.2.0_to_v3.2.1",
+          "size_mb": 45,
+          "checksum": "sha256:xyz789...",
+          "signature": "RSA4096:ghi012...",
+          "compression": "bsdiff",
+          "delta_base_version": "3.2.0"
+        },
+        "pre_conditions": {
+          "battery_level_min": 70,
+          "vehicle_state": "parked_engine_off",
+          "network_available": true,
+          "current_version_verified": true,
+          "safety_diagnostics_passed": true
+        },
+        "installation": {
+          "apply_delta_patch": true,
+          "target_partition": "bank_1",
+          "backup_critical_configs": true,
+          "atomic_update": true,
+          "reboot_required": true
+        },
+        "post_conditions": {
+          "verify_boot": true,
+          "run_diagnostics": true,
+          "calibration_check": true,
+          "report_telemetry": true,
+          "safety_validation": true
+        },
+        "rollback_procedure": {
+          "enabled": true,
+          "max_attempts": 2,
+          "fallback_version": "3.1.5",
+          "safety_fallback": "limp_mode"
+        }
+      },
+      "retrieved_patterns": [],
+      "retrieved_pattern_count": 2
+    }
+  ]
+}

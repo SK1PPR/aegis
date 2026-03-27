@@ -1,0 +1,581 @@
+{
+  "patterns": [
+    {
+      "name": "Infotainment Firmware Update - US Market",
+      "description": "Standard infotainment system firmware update for US region",
+      "metadata": {
+        "device_type": "infotainment",
+        "sw_version": "2.5.1",
+        "safety_class": "QM",
+        "region": "US",
+        "hardware_revision": "rev_A",
+        "deployment_mode": "A/B"
+      },
+      "deployment_spec": {
+        "update_package": {
+          "target_ecu": "infotainment",
+          "sw_version": "2.5.1",
+          "package_size_mb": 450,
+          "checksum": "sha256:abc123...",
+          "download_url": "https://ota.example.com/infotainment/v2.5.1"
+        },
+        "pre_conditions": {
+          "battery_level_min": 50,
+          "vehicle_state": "parked",
+          "ignition": "off",
+          "available_storage_mb": 500
+        },
+        "installation": {
+          "method": "A/B",
+          "partition_switch": true,
+          "reboot_required": true,
+          "install_timeout_minutes": 30
+        },
+        "post_conditions": {
+          "verification": {
+            "boot_check": true,
+            "version_validation": true,
+            "functional_test": ["display", "audio", "navigation"]
+          },
+          "rollback_on_failure": true
+        },
+        "rollback_procedure": {
+          "enabled": true,
+          "max_attempts": 3,
+          "fallback_version": "2.4.0"
+        }
+      },
+      "schema_fields": [
+        {"name": "target_ecu", "type": "string", "required": true},
+        {"name": "sw_version", "type": "string", "required": true},
+        {"name": "battery_level_min", "type": "integer", "required": true},
+        {"name": "vehicle_state", "type": "string", "required": true}
+      ],
+      "validation_rules": [
+        "Battery level must be >= 50%",
+        "Vehicle must be parked",
+        "Sufficient storage required"
+      ],
+      "best_practices": [
+        "Use A/B partitioning for safe updates",
+        "Always verify boot after update",
+        "Include rollback capability"
+      ]
+    },
+    {
+      "name": "ADAS Camera Firmware Update - ASIL-B",
+      "description": "Advanced Driver Assistance System camera update with safety checks",
+      "metadata": {
+        "device_type": "adas",
+        "sw_version": "3.2.0",
+        "safety_class": "ASIL-B",
+        "region": "EU",
+        "hardware_revision": "rev_B",
+        "deployment_mode": "dual-bank"
+      },
+      "deployment_spec": {
+        "update_package": {
+          "target_ecu": "adas_camera",
+          "sw_version": "3.2.0",
+          "package_size_mb": 120,
+          "checksum": "sha256:def456...",
+          "download_url": "https://ota.example.com/adas/camera/v3.2.0",
+          "signed": true,
+          "signature_verification": "required"
+        },
+        "pre_conditions": {
+          "battery_level_min": 70,
+          "vehicle_state": "parked",
+          "ignition": "off",
+          "safety_checks": {
+            "ecu_health_check": true,
+            "sensor_calibration_valid": true,
+            "no_dtc_codes": true
+          },
+          "available_storage_mb": 150
+        },
+        "installation": {
+          "method": "dual-bank",
+          "partition_switch": true,
+          "reboot_required": true,
+          "install_timeout_minutes": 20,
+          "safety_mode": "enabled",
+          "calibration_required": true
+        },
+        "post_conditions": {
+          "verification": {
+            "boot_check": true,
+            "version_validation": true,
+            "functional_test": ["object_detection", "lane_recognition", "distance_measurement"],
+            "safety_validation": true,
+            "calibration_check": true
+          },
+          "rollback_on_failure": true,
+          "safety_diagnostics": "mandatory"
+        },
+        "rollback_procedure": {
+          "enabled": true,
+          "max_attempts": 2,
+          "fallback_version": "3.1.5",
+          "safety_fallback": "limp_mode"
+        }
+      },
+      "schema_fields": [
+        {"name": "target_ecu", "type": "string", "required": true},
+        {"name": "sw_version", "type": "string", "required": true},
+        {"name": "safety_checks", "type": "object", "required": true},
+        {"name": "calibration_required", "type": "boolean", "required": true}
+      ],
+      "validation_rules": [
+        "Battery level must be >= 70% for ASIL-B",
+        "Vehicle must be stationary",
+        "No diagnostic trouble codes allowed",
+        "Sensor calibration must be valid",
+        "Safety diagnostics mandatory post-update"
+      ],
+      "best_practices": [
+        "Use dual-bank for safety-critical systems",
+        "Always validate calibration after update",
+        "Include limp mode fallback",
+        "Require signature verification"
+      ]
+    },
+    {
+      "name": "Powertrain ECU Update - ASIL-D",
+      "description": "Engine control unit update with highest safety requirements",
+      "metadata": {
+        "device_type": "powertrain",
+        "sw_version": "4.1.0",
+        "safety_class": "ASIL-D",
+        "region": "US",
+        "hardware_revision": "rev_A",
+        "deployment_mode": "dual-bank"
+      },
+      "deployment_spec": {
+        "update_package": {
+          "target_ecu": "engine_ecu",
+          "sw_version": "4.1.0",
+          "package_size_mb": 80,
+          "checksum": "sha256:ghi789...",
+          "download_url": "https://ota.example.com/powertrain/engine/v4.1.0",
+          "signed": true,
+          "signature_verification": "required",
+          "encryption": "AES-256"
+        },
+        "pre_conditions": {
+          "battery_level_min": 80,
+          "vehicle_state": "parked",
+          "ignition": "off",
+          "engine_temperature": "normal",
+          "safety_checks": {
+            "ecu_health_check": true,
+            "sensor_validation": true,
+            "no_critical_dtc": true,
+            "fuel_system_check": true
+          },
+          "available_storage_mb": 100,
+          "service_mode": "enabled"
+        },
+        "installation": {
+          "method": "dual-bank",
+          "partition_switch": true,
+          "reboot_required": true,
+          "install_timeout_minutes": 15,
+          "safety_mode": "maximum",
+          "calibration_data": {
+            "fuel_maps": true,
+            "ignition_timing": true,
+            "emissions_control": true
+          }
+        },
+        "post_conditions": {
+          "verification": {
+            "boot_check": true,
+            "version_validation": true,
+            "functional_test": ["idle_stability", "throttle_response", "fuel_injection", "emissions"],
+            "safety_validation": "comprehensive",
+            "calibration_verification": "mandatory",
+            "emissions_compliance": true
+          },
+          "rollback_on_failure": true,
+          "safety_diagnostics": "comprehensive",
+          "test_drive_required": false
+        },
+        "rollback_procedure": {
+          "enabled": true,
+          "max_attempts": 1,
+          "fallback_version": "4.0.5",
+          "safety_fallback": "emergency_mode",
+          "automatic_rollback": true
+        }
+      },
+      "schema_fields": [
+        {"name": "target_ecu", "type": "string", "required": true},
+        {"name": "sw_version", "type": "string", "required": true},
+        {"name": "safety_checks", "type": "object", "required": true},
+        {"name": "calibration_data", "type": "object", "required": true},
+        {"name": "safety_mode", "type": "string", "required": true}
+      ],
+      "validation_rules": [
+        "Battery level must be >= 80% for ASIL-D",
+        "Vehicle must be in service mode",
+        "No critical diagnostic codes allowed",
+        "Engine temperature must be normal",
+        "Comprehensive safety validation required",
+        "Emissions compliance must be verified"
+      ],
+      "best_practices": [
+        "Use encryption for powertrain updates",
+        "Require maximum safety mode",
+        "Enable automatic rollback",
+        "Include emergency mode fallback",
+        "Verify all calibration data"
+      ]
+    },
+    {
+      "name": "Multi-ECU ADAS Update - Coordinated",
+      "description": "Coordinated update of multiple ADAS ECUs (radar + camera)",
+      "metadata": {
+        "device_type": "adas",
+        "sw_version": "3.3.0",
+        "safety_class": "ASIL-B",
+        "region": "CN",
+        "hardware_revision": "rev_A",
+        "deployment_mode": "A/B"
+      },
+      "deployment_spec": {
+        "update_package": {
+          "target_ecus": ["adas_radar", "adas_camera"],
+          "sw_version": "3.3.0",
+          "package_size_mb": 250,
+          "checksum": "sha256:jkl012...",
+          "download_url": "https://ota.example.com/adas/multi/v3.3.0",
+          "deployment_order": ["adas_radar", "adas_camera"],
+          "synchronized": true
+        },
+        "pre_conditions": {
+          "battery_level_min": 75,
+          "vehicle_state": "parked",
+          "ignition": "off",
+          "safety_checks": {
+            "all_ecus_healthy": true,
+            "sensors_calibrated": true,
+            "no_dtc_codes": true
+          },
+          "available_storage_mb": 300,
+          "coordination_check": true
+        },
+        "installation": {
+          "method": "A/B",
+          "partition_switch": true,
+          "reboot_required": true,
+          "install_timeout_minutes": 45,
+          "deployment_strategy": "sequential",
+          "inter_ecu_sync": true,
+          "rollback_coordination": true
+        },
+        "post_conditions": {
+          "verification": {
+            "boot_check": true,
+            "version_validation": true,
+            "functional_test": ["radar_tracking", "camera_detection", "sensor_fusion"],
+            "safety_validation": true,
+            "calibration_check": true,
+            "inter_ecu_communication": true
+          },
+          "rollback_on_failure": true,
+          "coordinated_rollback": true
+        },
+        "rollback_procedure": {
+          "enabled": true,
+          "max_attempts": 2,
+          "fallback_version": "3.2.0",
+          "coordinated": true,
+          "rollback_order": ["adas_camera", "adas_radar"]
+        }
+      },
+      "schema_fields": [
+        {"name": "target_ecus", "type": "array", "required": true},
+        {"name": "deployment_order", "type": "array", "required": true},
+        {"name": "synchronized", "type": "boolean", "required": true},
+        {"name": "inter_ecu_sync", "type": "boolean", "required": true}
+      ],
+      "validation_rules": [
+        "All target ECUs must be healthy",
+        "Deployment order must be specified",
+        "Inter-ECU communication verified",
+        "Coordinated rollback capability required"
+      ],
+      "best_practices": [
+        "Update in specified order",
+        "Verify inter-ECU communication",
+        "Use coordinated rollback",
+        "Test sensor fusion after update"
+      ]
+    },
+    {
+      "name": "Telematics Update - Regional (China)",
+      "description": "Telematics module update with China-specific connectivity",
+      "metadata": {
+        "device_type": "telematics",
+        "sw_version": "1.8.0",
+        "safety_class": "QM",
+        "region": "CN",
+        "hardware_revision": "rev_A",
+        "deployment_mode": "single-bank"
+      },
+      "deployment_spec": {
+        "update_package": {
+          "target_ecu": "telematics",
+          "sw_version": "1.8.0",
+          "package_size_mb": 200,
+          "checksum": "sha256:mno345...",
+          "download_url": "https://ota.cn.example.com/telematics/v1.8.0",
+          "regional_compliance": {
+            "data_localization": true,
+            "connectivity_protocols": ["4G", "5G"],
+            "local_services": true
+          }
+        },
+        "pre_conditions": {
+          "battery_level_min": 50,
+          "vehicle_state": "parked",
+          "network_connectivity": "stable",
+          "available_storage_mb": 250
+        },
+        "installation": {
+          "method": "single-bank",
+          "reboot_required": true,
+          "install_timeout_minutes": 25,
+          "network_required": true,
+          "regional_config": true
+        },
+        "post_conditions": {
+          "verification": {
+            "boot_check": true,
+            "version_validation": true,
+            "functional_test": ["network_connectivity", "gps", "remote_services"],
+            "regional_compliance_check": true
+          },
+          "rollback_on_failure": true
+        },
+        "rollback_procedure": {
+          "enabled": true,
+          "max_attempts": 3,
+          "fallback_version": "1.7.5"
+        }
+      },
+      "schema_fields": [
+        {"name": "target_ecu", "type": "string", "required": true},
+        {"name": "regional_compliance", "type": "object", "required": true},
+        {"name": "network_connectivity", "type": "string", "required": true}
+      ],
+      "validation_rules": [
+        "Network connectivity required",
+        "Regional compliance checks mandatory",
+        "Data localization verified"
+      ],
+      "best_practices": [
+        "Verify regional compliance",
+        "Test local connectivity protocols",
+        "Validate data localization"
+      ]
+    },
+    {
+      "name": "Delta Update - Infotainment Patch",
+      "description": "Bandwidth-efficient delta update for infotainment",
+      "metadata": {
+        "device_type": "infotainment",
+        "sw_version": "2.5.2",
+        "safety_class": "QM",
+        "region": "US",
+        "hardware_revision": "rev_A",
+        "deployment_mode": "delta"
+      },
+      "deployment_spec": {
+        "update_package": {
+          "target_ecu": "infotainment",
+          "sw_version": "2.5.2",
+          "base_version": "2.5.1",
+          "package_size_mb": 45,
+          "delta_patch": true,
+          "checksum": "sha256:pqr678...",
+          "download_url": "https://ota.example.com/infotainment/delta/v2.5.1-to-v2.5.2",
+          "bandwidth_savings_percent": 90
+        },
+        "pre_conditions": {
+          "battery_level_min": 40,
+          "vehicle_state": "any",
+          "current_version": "2.5.1",
+          "available_storage_mb": 100
+        },
+        "installation": {
+          "method": "delta",
+          "apply_patch": true,
+          "verify_base_version": true,
+          "reboot_required": false,
+          "install_timeout_minutes": 10
+        },
+        "post_conditions": {
+          "verification": {
+            "checksum_validation": true,
+            "version_validation": true,
+            "functional_test": ["ui_responsiveness"]
+          },
+          "rollback_on_failure": true
+        },
+        "rollback_procedure": {
+          "enabled": true,
+          "max_attempts": 3,
+          "fallback_version": "2.5.1"
+        }
+      },
+      "schema_fields": [
+        {"name": "delta_patch", "type": "boolean", "required": true},
+        {"name": "base_version", "type": "string", "required": true},
+        {"name": "bandwidth_savings_percent", "type": "integer", "required": false}
+      ],
+      "validation_rules": [
+        "Base version must match current version",
+        "Checksum validation mandatory",
+        "Lower battery threshold acceptable for delta"
+      ],
+      "best_practices": [
+        "Verify base version before applying patch",
+        "Use delta for minor updates",
+        "Validate checksum after patch"
+      ]
+    },
+    {
+      "name": "Emergency Rollback - ADAS Camera",
+      "description": "Emergency rollback procedure for failed ADAS update",
+      "metadata": {
+        "device_type": "adas",
+        "sw_version": "3.1.5",
+        "safety_class": "ASIL-B",
+        "region": "US",
+        "hardware_revision": "rev_B",
+        "deployment_mode": "dual-bank"
+      },
+      "deployment_spec": {
+        "update_package": {
+          "target_ecu": "adas_camera",
+          "sw_version": "3.1.5",
+          "rollback_operation": true,
+          "emergency_mode": true,
+          "package_size_mb": 0,
+          "rollback_reason": "detection_failure"
+        },
+        "pre_conditions": {
+          "battery_level_min": 30,
+          "vehicle_state": "any",
+          "failure_detected": true
+        },
+        "installation": {
+          "method": "dual-bank",
+          "partition_switch": true,
+          "switch_to_backup": true,
+          "reboot_required": true,
+          "install_timeout_minutes": 5,
+          "emergency_mode": true
+        },
+        "post_conditions": {
+          "verification": {
+            "boot_check": true,
+            "version_validation": true,
+            "basic_functionality": true,
+            "safe_mode_enabled": true
+          },
+          "diagnostics_log": true,
+          "failure_report": true
+        },
+        "rollback_procedure": {
+          "enabled": true,
+          "emergency": true,
+          "fallback_version": "3.1.5",
+          "limp_mode": "enabled"
+        }
+      },
+      "schema_fields": [
+        {"name": "rollback_operation", "type": "boolean", "required": true},
+        {"name": "emergency_mode", "type": "boolean", "required": true},
+        {"name": "rollback_reason", "type": "string", "required": true}
+      ],
+      "validation_rules": [
+        "Lower battery threshold for emergency",
+        "Immediate partition switch",
+        "Enable limp mode as fallback"
+      ],
+      "best_practices": [
+        "Log failure details",
+        "Enable safe mode after rollback",
+        "Report rollback event"
+      ]
+    },
+    {
+      "name": "Gateway ECU Update",
+      "description": "Central gateway ECU firmware update",
+      "metadata": {
+        "device_type": "gateway",
+        "sw_version": "5.0.0",
+        "safety_class": "ASIL-A",
+        "region": "EU",
+        "hardware_revision": "rev_A",
+        "deployment_mode": "A/B"
+      },
+      "deployment_spec": {
+        "update_package": {
+          "target_ecu": "gateway",
+          "sw_version": "5.0.0",
+          "package_size_mb": 100,
+          "checksum": "sha256:stu901...",
+          "download_url": "https://ota.example.com/gateway/v5.0.0",
+          "dependencies": []
+        },
+        "pre_conditions": {
+          "battery_level_min": 60,
+          "vehicle_state": "parked",
+          "ignition": "off",
+          "all_ecus_responsive": true,
+          "available_storage_mb": 120
+        },
+        "installation": {
+          "method": "A/B",
+          "partition_switch": true,
+          "reboot_required": true,
+          "install_timeout_minutes": 20,
+          "network_isolation": true
+        },
+        "post_conditions": {
+          "verification": {
+            "boot_check": true,
+            "version_validation": true,
+            "functional_test": ["can_bus", "routing", "security"],
+            "ecu_communication": true
+          },
+          "rollback_on_failure": true
+        },
+        "rollback_procedure": {
+          "enabled": true,
+          "max_attempts": 2,
+          "fallback_version": "4.9.0"
+        }
+      },
+      "schema_fields": [
+        {"name": "target_ecu", "type": "string", "required": true},
+        {"name": "all_ecus_responsive", "type": "boolean", "required": true},
+        {"name": "network_isolation", "type": "boolean", "required": false}
+      ],
+      "validation_rules": [
+        "All ECUs must be responsive",
+        "CAN bus functionality verified",
+        "Routing tables validated"
+      ],
+      "best_practices": [
+        "Test all ECU communication",
+        "Verify network isolation during update",
+        "Validate routing after update"
+      ]
+    }
+  ]
+}

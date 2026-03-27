@@ -1,0 +1,56 @@
+OTA SYSTEMS COMPARATIVE BENCHMARK ANALYSIS SUMMARY
+============================================================
+
+Systems Analyzed: 10
+  - TUF: 1 records
+  - Blockchain OTA: 1 records
+  - SWUpdate: 1 records
+  - RAUC: 1 records
+  - Balena: 1 records
+  - Legacy OTA: 1 records
+  - Uptane: 1 records
+  - HawkBit: 1 records
+  - Modern OTA: 1 records
+  - MQTT OTA: 1 records
+
+Common Metrics Analyzed: 10
+  - CPU Usage Percentage (%)
+  - Memory Usage (MB)
+  - Operation Duration (seconds)
+  - Network Latency (ms)
+  - Download Speed (Mbps)
+  - Download Size (bytes)
+  - Disk Usage (GB / %)
+  - Total Events Processed (count)
+  - Update Attempts (count)
+  - Successful Operations (count)
+
+Method-Specific Analyses: 6
+  - Blockchain OTA: 3 unique metrics
+  - Modern OTA: 3 unique metrics
+  - HawkBit: 2 unique metrics
+  - RAUC: 2 unique metrics
+  - Uptane: 1 unique metrics
+  - MQTT OTA: 2 unique metrics
+
+Generated Files:
+  Comparative Analysis:
+    - cpu_usage_comparison.pdf
+    - memory_usage_comparison.pdf
+    - duration_comparison.pdf
+    - latency_comparison.pdf
+    - download_speed_comparison.pdf
+    - download_size_comparison.pdf
+    - disk_usage_comparison.pdf
+    - event_count_comparison.pdf
+    - update_attempts_comparison.pdf
+    - success_operations_comparison.pdf
+    - success_rate_comparison.pdf
+    - performance_matrix.pdf
+  Method-Specific Analysis:
+    - blockchain_ota_specific.pdf
+    - modern_ota_specific.pdf
+    - hawkbit_specific.pdf
+    - rauc_specific.pdf
+    - uptane_specific.pdf
+    - mqtt_ota_specific.pdf

@@ -1,233 +1,206 @@
-# Container-Lang DSL Conversational Agent
+# NL2DSL Agent - Natural Language to DSL Generation for OTA Updates
 
-A terminal-based conversational AI agent that converts natural language descriptions into container-lang DSL code.
-
-## Features
-
-- **Conversational Interface**: Chat naturally about your infrastructure needs
-- **Intelligent Code Generation**: Uses OpenAI's structured output for reliable DSL generation
-- **Grammar Validation**: Automatic validation against DSL grammar rules with auto-correction
-- **Interactive Refinement**: Iterate on your design through back-and-forth conversation
-- **Multi-Layer Validation**: Grammar rules + optional Rust parser validation
-- **Rich Terminal UI**: Beautiful syntax highlighting and formatting
-
-## Prerequisites
-
-- Python 3.9+
-- OpenAI API key
-- (Optional) container-lang Rust compiler for validation
-
-## Installation
-
-1. **Install Python dependencies**:
-```bash
-pip install -r requirements.txt
-```
-
-2. **Set up your OpenAI API key**:
-```bash
-cp .env.example .env
-# Edit .env and add your API key
-```
-
-3. **(Optional) Build the Rust parser for validation**:
-```bash
-cd ../container-lang
-cargo build --release
-cd ../nl2dsl-agent
-```
-
-## Usage
-
-Start the conversational agent:
-
-```bash
-python main.py
-```
-
-### Commands
-
-- `/show` - Display current generated DSL code
-- `/validate` - Validate code with Rust parser
-- `/save <filename>` - Save DSL code to file
-- `/reset` - Start a new conversation
-- `/help` - Show help
-- `/quit` - Exit
-
-### Example Conversations
-
-**Example 1: Simple Web Server**
-```
-You: I need a web server
-Agent: I can help you set up a web server! A few questions:
-      1. Which web server? (nginx, apache, or caddy)
-      2. What ports should it listen on?
-      3. Do you have static files to serve?
-
-You: nginx on port 80
-Agent: Great! I'll create an nginx web server on port 80.
-      Should I generate the code now?
-
-You: yes
-Agent: Here's your nginx web server configuration:
-      [Displays generated DSL code]
-
-You: /save web.container
-Agent: Saved to web.container
-```
-
-**Example 2: Full Stack Application**
-```
-You: I need a complete web application with nginx, a node api, and postgres database
-
-Agent: I'll help you set up a full stack application! Let me clarify a few things:
-
-      For nginx:
-      - Ports: 80/443?
-
-      For the Node API:
-      - What image? (e.g., node:20, or a custom image)
-      - What port does it run on?
-
-      For PostgreSQL:
-      - Database credentials?
-      - Port (default 5432)?
-      - Need persistent storage?
-
-You: nginx on 80 and 443, node:20 api on port 3000, postgres on 5432 with user admin password secret
-
-Agent: Perfect! Generating your full stack setup:
-      [Displays multi-service DSL code]
-
-You: /validate
-Agent: Valid DSL code!
-      [Shows validated code]
-```
-
-**Example 3: Iterative Refinement**
-```
-You: postgres database
-
-Agent: I'll set up PostgreSQL for you. Questions:
-      - Port? (default 5432)
-      - Credentials?
-      - Data volume for persistence?
-
-You: just use defaults for now
-
-Agent: [Generates basic postgres setup]
-
-You: actually, I need 3 replicas and set the user to myapp
-
-Agent: [Updates configuration with 3 replicas and custom user]
-
-You: /show
-Agent: [Displays updated code]
-```
-
-## How It Works
-
-1. **Natural Language Processing**: Uses OpenAI GPT-4 with structured outputs
-2. **Schema Validation**: Pydantic models ensure type safety
-3. **Grammar Validation**: Validates against DSL grammar rules (identifiers, ports, volumes, etc.)
-4. **Auto-Correction**: LLM automatically fixes validation errors (up to 2 retries)
-5. **Code Generation**: Template-based DSL code generation from validated JSON
-6. **Parser Validation**: (Optional) Validates against the actual Rust parser
-7. **Conversation Context**: Maintains full conversation history for iterative refinement
-
-## Architecture
-
-```
-Natural Language Input
-       ↓
-OpenAI API (Structured Output)
-       ↓
-Pydantic Schema Validation (types)
-       ↓
-Grammar Validation (syntax rules)
-       ↓  ← Auto-retry if invalid (up to 2x)
-       ↓
-DSL Code Generator
-       ↓
-(Optional) Rust Parser Validation
-       ↓
-Final DSL Code
-```
+AI-powered system for generating deployment specifications for automotive Over-The-Air (OTA) updates from natural language descriptions.
 
 ## Project Structure
 
 ```
 nl2dsl-agent/
-├── main.py                  # CLI interface
-├── agent.py                 # Core conversational agent
-├── schema.py                # Pydantic schemas
-├── grammar_validator.py     # Grammar validation rules
-├── dsl_generator.py         # DSL code generation
-├── test_grammar.py          # Grammar validation tests
-├── requirements.txt         # Python dependencies
-├── .env.example             # Environment variables template
-├── README.md                # This file
-├── SETUP.md                 # Quick setup guide
-└── GRAMMAR_VALIDATION.md    # Grammar validation documentation
+├── src/                      # Core source code
+│   ├── __init__.py          # Package initialization
+│   ├── agent.py             # Main DSL agent with LLM integration
+│   ├── knowledge_base.py    # Three-stage retrieval pipeline
+│   ├── ota_metrics_evaluator.py  # Evaluation and metrics
+│   ├── ota_test_dataset.py  # Test dataset generation
+│   ├── dsl_generator.py     # DSL generation utilities
+│   ├── dataset_generator.py # Dataset utilities
+│   └── schema.py            # Schema definitions
+│
+├── data/                     # Data files
+│   ├── ota_knowledge_base.json      # Retrieval database (12 patterns)
+│   ├── automotive_ota_patterns.json # Source OTA patterns
+│   └── ota_test_dataset.json        # Generated test cases
+│
+├── results/                  # Evaluation results
+│   ├── ota_evaluation_results.json  # Detailed benchmark results
+│   ├── nl2dsl_quick_metrics.json   # Quick metrics summary
+│   └── [historical results]
+│
+├── scripts/                  # Utility scripts
+│   ├── convert_ota_patterns.py     # Convert patterns to KB format
+│   ├── fix_safety_class.py         # Fix safety class formatting
+│   ├── fix_schema_fields.py        # Fix schema field structure
+│   ├── load_automotive_patterns.py # Load patterns into KB
+│   ├── update_ota_metrics_graph.py # Update metrics visualization
+│   └── verify_ota_setup.py         # Verify setup completeness
+│
+├── tests/                    # Test files
+│   ├── test_agent_simple.py        # Simple agent tests
+│   ├── test_grammar.py             # Grammar validation tests
+│   └── verify_ota_patterns.py      # Pattern verification
+│
+├── deprecated/               # Old/unused code (kept for reference)
+│   ├── grammar_based_generator.py
+│   ├── template_based_generator.py
+│   └── [other legacy files]
+│
+├── docs/                     # Documentation
+│   ├── BENCHMARK_RESULTS_FINAL.md
+│   ├── OTA_BENCHMARK_SUMMARY.md
+│   ├── QUICKSTART_OTA_BENCHMARK.md
+│   └── SETUP.md
+│
+├── metrics_ota-main/         # Metrics for comparison with other systems
+│   └── nl2dsl_agent_metrics.json
+│
+├── run_ota_benchmark.py      # Main benchmark runner
+├── main.py                   # Alternative entry point
+├── .env                      # Environment variables (API keys)
+├── requirements.txt          # Python dependencies
+└── README.md                 # This file
 ```
 
-## Tips for Best Results
+## Quick Start
 
-1. **Be Specific**: Mention ports, environment variables, and volumes when you know them
-2. **Iterate**: Start simple and refine through conversation
-3. **Use Commands**: Use `/show` frequently to see current state
-4. **Validate Early**: Use `/validate` to catch issues before saving
-5. **Ask Questions**: The agent will guide you if it needs more information
+### 1. Installation
 
-## Common Patterns
+```bash
+# Create virtual environment
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
-The agent knows common container patterns:
-
-- **Web servers**: nginx, apache, caddy
-- **Databases**: postgres, mysql, mongodb, redis
-- **Runtimes**: node, python, java
-- **Standard ports**: 80/443 (web), 5432 (postgres), 3306 (mysql), 6379 (redis)
-
-## Troubleshooting
-
-**"OPENAI_API_KEY not found"**
-- Make sure you created `.env` file with your API key
-
-**"Parser not found"**
-- Build the Rust compiler: `cd ../container-lang && cargo build --release`
-- Or skip validation and just use the generated code
-
-**API Errors**
-- Check your API key is valid
-- Ensure you have internet connection
-- Verify you have API credits
-
-## Example Output
-
+# Install dependencies
+pip install -r requirements.txt
 ```
-service web {
-  image "nginx:latest"
-  replicas 2
-  ports 80:80,443:443
-  volumes "./html:/usr/share/nginx/html"
-}
 
-service api {
-  image "node:20"
-  replicas 3
-  ports 3000:3000
-  env NODE_ENV=production
-}
+### 2. Configuration
 
-service db {
-  image "postgres:16"
-  replicas 1
-  ports 5432:5432
-  env POSTGRES_USER=admin,POSTGRES_PASSWORD=secret
-  volumes "./data:/var/lib/postgresql/data"
-}
+Create a `.env` file with your OpenAI API key:
 ```
+OPENAI_API_KEY=your_api_key_here
+```
+
+### 3. Run the Benchmark
+
+```bash
+python run_ota_benchmark.py
+```
+
+This will:
+1. Generate 18 OTA test cases
+2. Run evaluation using the nl2dsl agent
+3. Generate metrics compatible with other OTA systems
+4. Save results to `results/` directory
+
+## Key Features
+
+### Three-Stage Retrieval Pipeline
+
+1. **Metadata Filtering** - Deterministic filtering by ECU type, safety class, region
+2. **Semantic Search** - Vector-based similarity matching
+3. **Schema-Aware Re-Ranking** - Structural and version-aware scoring
+
+### Knowledge Base
+
+- **12 OTA Patterns** covering:
+  - Multiple ECU types (infotainment, ADAS, powertrain, telematics, gateway)
+  - Safety levels (QM, ASIL-A, ASIL-B, ASIL-D)
+  - Regions (US, EU, CN)
+  - Deployment modes (A/B, dual-bank, delta, full)
+
+### Evaluation Metrics
+
+- **Precision & Recall** - Accuracy of generated specifications
+- **Success Rate** - Percentage of valid deployments
+- **Latency** - Generation time (avg, median, P95, P99)
+- **Safety Compliance** - Automotive-specific safety checks
+- **Rollback Coverage** - Emergency recovery procedures
+
+## Current Performance
+
+Based on the latest benchmark run:
+
+- **Precision**: 61.43%
+- **Recall**: 69.44%
+- **Success Rate**: 16.67%
+- **Avg Latency**: 1552ms
+- **Safety Compliance**: 7.69%
+
+## Development
+
+### Running Tests
+
+```bash
+# Test agent functionality
+python tests/test_agent_simple.py
+
+# Verify OTA patterns
+python tests/verify_ota_patterns.py
+```
+
+### Adding New Patterns
+
+1. Add patterns to `data/automotive_ota_patterns.json`
+2. Run conversion script:
+   ```bash
+   python scripts/convert_ota_patterns.py
+   ```
+3. Verify patterns loaded correctly:
+   ```bash
+   python tests/verify_ota_patterns.py
+   ```
+
+### Project Cleanup
+
+The project has been reorganized for clarity:
+- Core functionality in `src/`
+- Utility scripts in `scripts/`
+- Test files in `tests/`
+- Results and data separated
+- Deprecated code moved to `deprecated/`
+
+## Architecture
+
+### Agent (src/agent.py)
+- Manages conversation with LLM
+- Integrates with knowledge base for retrieval
+- Generates deployment specifications
+
+### Knowledge Base (src/knowledge_base.py)
+- Loads and indexes OTA patterns
+- Implements three-stage retrieval
+- Handles semantic embeddings
+
+### Evaluator (src/ota_metrics_evaluator.py)
+- Runs benchmark evaluation
+- Calculates precision/recall
+- Generates comparative metrics
+
+## Next Steps
+
+1. Improve success rate by:
+   - Adding more diverse patterns to knowledge base
+   - Better version/hardware matching
+   - Enhanced safety validation
+
+2. Expand test coverage:
+   - More edge cases
+   - Multi-ECU scenarios
+   - Regional variations
+
+3. Optimize performance:
+   - Reduce latency
+   - Improve retrieval accuracy
+   - Better LLM prompting
+
+## Contributing
+
+When adding new features:
+1. Put core functionality in `src/`
+2. Add tests to `tests/`
+3. Update documentation in `docs/`
+4. Keep utility scripts in `scripts/`
 
 ## License
 
-Same as container-lang project.
+[Your License Here]
