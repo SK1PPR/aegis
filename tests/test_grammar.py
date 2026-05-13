@@ -1,152 +1,72 @@
 #!/usr/bin/env python3
-"""Test script to demonstrate grammar validation."""
+"""Smoke-test baseline DSL generation and validation helpers."""
 
-from schema import Service, Program, PortMapping, EnvVar
-from grammar_validator import validate_and_explain
-from dsl_generator import generate_dsl
+import sys
+from pathlib import Path
 
+from pydantic import ValidationError
 
-def test_valid_program():
-    """Test a valid program."""
-    print("=" * 60)
-    print("TEST 1: Valid Program")
-    print("=" * 60)
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(PROJECT_ROOT))
 
-    program = Program(services=[
-        Service(
-            name="web",
-            image="nginx:latest",
-            replicas=2,
-            ports=[PortMapping(host=80, container=80)],
-            env=[EnvVar(key="NODE_ENV", value="production")]
-        )
-    ])
-
-    is_valid, message = validate_and_explain(program)
-    print(f"\nResult: {'✓ VALID' if is_valid else '✗ INVALID'}")
-    print(message)
-
-    if is_valid:
-        print("\nGenerated DSL:")
-        print("-" * 40)
-        print(generate_dsl(program))
+from src.dsl_generator import generate_dsl, validate_program
+from src.schema import EnvVar, PortMapping, Program, Service
 
 
-def test_invalid_service_name():
-    """Test invalid service name with spaces."""
-    print("=" * 60)
-    print("TEST 2: Invalid Service Name (contains spaces)")
-    print("=" * 60)
-
-    program = Program(services=[
-        Service(
-            name="my web server",  # Invalid: contains spaces
-            image="nginx:latest",
-            replicas=1
-        )
-    ])
-
-    is_valid, message = validate_and_explain(program)
-    print(f"\nResult: {'✓ VALID' if is_valid else '✗ INVALID'}")
-    print(message)
+def check(condition: bool, message: str) -> None:
+    if not condition:
+        raise AssertionError(message)
 
 
-def test_invalid_env_key():
-    """Test invalid environment variable key."""
-    print("=" * 60)
-    print("TEST 3: Invalid Env Var Key (starts with number)")
-    print("=" * 60)
+def test_valid_program() -> None:
+    program = Program(
+        services=[
+            Service(
+                name="web",
+                image="nginx:latest",
+                replicas=2,
+                ports=[PortMapping(host=80, container=80)],
+                env=[EnvVar(key="NODE_ENV", value="production")],
+            )
+        ]
+    )
 
-    program = Program(services=[
-        Service(
-            name="api",
-            image="node:20",
-            replicas=1,
-            env=[EnvVar(key="123_VAR", value="value")]  # Invalid: starts with number
-        )
-    ])
-
-    is_valid, message = validate_and_explain(program)
-    print(f"\nResult: {'✓ VALID' if is_valid else '✗ INVALID'}")
-    print(message)
-
-
-def test_invalid_port():
-    """Test invalid port number."""
-    print("=" * 60)
-    print("TEST 4: Invalid Port Number (out of range)")
-    print("=" * 60)
-
-    program = Program(services=[
-        Service(
-            name="db",
-            image="postgres:16",
-            replicas=1,
-            ports=[PortMapping(host=99999, container=5432)]  # Invalid: > 65535
-        )
-    ])
-
-    is_valid, message = validate_and_explain(program)
-    print(f"\nResult: {'✓ VALID' if is_valid else '✗ INVALID'}")
-    print(message)
+    errors = validate_program(program)
+    check(errors == [], f"expected no errors, got {errors}")
+    dsl = generate_dsl(program)
+    check("service web" in dsl, "generated DSL should include service block")
+    check('image "nginx:latest"' in dsl, "generated DSL should include image")
 
 
-def test_invalid_volume():
-    """Test invalid volume format."""
-    print("=" * 60)
-    print("TEST 5: Invalid Volume Format (missing colon)")
-    print("=" * 60)
+def test_invalid_port() -> None:
+    program = Program(
+        services=[
+            Service(
+                name="db",
+                image="postgres:16",
+                ports=[PortMapping(host=99999, container=5432)],
+            )
+        ]
+    )
 
-    program = Program(services=[
-        Service(
-            name="app",
-            image="myapp:latest",
-            replicas=1,
-            volumes=["./data"]  # Invalid: missing container path
-        )
-    ])
-
-    is_valid, message = validate_and_explain(program)
-    print(f"\nResult: {'✓ VALID' if is_valid else '✗ INVALID'}")
-    print(message)
+    errors = validate_program(program)
+    check(errors == ["Service 'db': invalid host port 99999"], f"unexpected errors: {errors}")
 
 
-def test_multiple_errors():
-    """Test program with multiple validation errors."""
-    print("=" * 60)
-    print("TEST 6: Multiple Validation Errors")
-    print("=" * 60)
+def test_invalid_replicas_rejected_by_schema() -> None:
+    try:
+        Service(name="api", image="node:20", replicas=0)
+    except ValidationError:
+        return
+    raise AssertionError("replicas=0 should fail schema validation")
 
-    program = Program(services=[
-        Service(
-            name="bad-service-1",  # Valid
-            image="not a valid image!!!",  # Invalid image
-            replicas=1,
-            ports=[PortMapping(host=70000, container=80)],  # Invalid port
-            env=[EnvVar(key="BAD KEY", value="value")],  # Invalid: space in key
-            volumes=["nocolon"]  # Invalid: missing colon
-        )
-    ])
 
-    is_valid, message = validate_and_explain(program)
-    print(f"\nResult: {'✓ VALID' if is_valid else '✗ INVALID'}")
-    print(message)
+def main() -> None:
+    test_valid_program()
+    test_invalid_port()
+    test_invalid_replicas_rejected_by_schema()
+    print("Baseline DSL grammar smoke tests passed")
 
 
 if __name__ == "__main__":
-    test_valid_program()
-    print("\n")
-
-    test_invalid_service_name()
-    print("\n")
-
-    test_invalid_env_key()
-    print("\n")
-
-    test_invalid_port()
-    print("\n")
-
-    test_invalid_volume()
-    print("\n")
-
-    test_multiple_errors()
+    main()

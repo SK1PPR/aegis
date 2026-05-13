@@ -5,7 +5,12 @@ This runs a simple test without requiring OpenAI API key.
 """
 
 import sys
+import os
 from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(PROJECT_ROOT))
+os.environ.setdefault("RGOTA_EMBEDDING_BACKEND", "hash")
 
 def test_imports():
     """Test that all imports work correctly."""

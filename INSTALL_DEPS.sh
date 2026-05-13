@@ -1,14 +1,16 @@
-#!/bin/bash
-# Install dependencies for OTA benchmarking
+#!/usr/bin/env bash
+set -euo pipefail
 
-echo "Installing OTA benchmark dependencies..."
-pip install psutil matplotlib seaborn numpy pandas
+cd "$(dirname "$0")"
 
-echo ""
-echo "✓ Installation complete!"
-echo ""
-echo "Run verification:"
-echo "  python verify_ota_setup.py"
-echo ""
-echo "Start benchmarking:"
-echo "  python run_ota_benchmark.py"
+if [ ! -d ".venv" ]; then
+  python -m venv .venv
+fi
+
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+
+echo
+echo "Environment ready."
+echo "Smoke test: RGOTA_EMBEDDING_BACKEND=hash python tests/quick_test.py"
+echo "Paper check: python scripts/verify_paper_results.py /path/to/RGOTA-paper.pdf"

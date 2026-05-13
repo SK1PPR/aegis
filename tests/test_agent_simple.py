@@ -1,8 +1,16 @@
 #!/usr/bin/env python3
 """Simple test to check if the agent is working."""
 
-from agent import DSLAgent
-from knowledge_base import ECUType, SafetyClass, DeploymentMode
+import os
+import sys
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(PROJECT_ROOT))
+os.environ.setdefault("RGOTA_EMBEDDING_BACKEND", "hash")
+
+from src.agent import DSLAgent
+from src.knowledge_base import ECUType, SafetyClass, DeploymentMode
 
 
 def test_agent():

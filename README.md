@@ -1,121 +1,113 @@
-# AEGIS: Retrieval-Grounded Generation of Safety-Critical Automotive OTA Deployment Specifications
+# RGOTA: Retrieval-Grounded Generation of Safety-Critical Automotive OTA Deployment Specifications
 
-AEGIS is an LLM-based agent that turns plain-language OTA update requests into schema-valid, ISO 26262-compliant deployment specifications. Rather than generating safety-critical fields from scratch, AEGIS retrieves the closest matching template from a curated knowledge base of validated deployment patterns and constrains the LLM to adapt it — keeping all mandatory safety fields, rollback logic, and schema constraints intact.
+RGOTA converts natural-language automotive OTA deployment requests into structured, safety-aware deployment specifications. It retrieves validated OTA patterns first, filters them by hard metadata such as ECU type and ASIL class, re-ranks them by semantic and schema fit, and then asks `gpt-4o-2024-08-06` to adapt the retrieved template.
 
-> Code artifact for the paper submitted to ASE 2026.
-> Repository: [https://github.com/SK1PPR/aegis](https://github.com/SK1PPR/aegis)
+This repository is the code and artifact bundle for the ASE 2026 paper, "RGOTA: Retrieval-Grounded Generation of Safety-Critical Automotive OTA Deployment Specifications."
 
----
+## What Is Included
 
-## How It Works
+```text
+src/
+  agent.py                  LLM agent and prompt construction
+  knowledge_base.py         Three-stage retrieval pipeline
+  ota_metrics_evaluator.py  18-case OTA benchmark metrics
+  ota_test_dataset.py       OTA benchmark cases
+  dataset_generator.py      28-task baseline benchmark data
+  dsl_generator.py          DSL generation utilities
+  schema.py                 Schema helpers
 
-AEGIS uses a three-stage retrieval pipeline before any LLM generation:
+data/
+  ota_knowledge_base.json       Curated OTA retrieval patterns
+  automotive_ota_patterns.json  Source pattern data
+  ota_test_dataset.json         Generated OTA benchmark cases
 
-1. **Metadata Filtering** — Hard constraints on ECU type, safety class, SW version, region, hardware revision, and deployment mode. Uses a five-level fallback that never relaxes ECU type or safety class.
-2. **Semantic Retrieval** — Dense vector search over metadata-approved candidates using `all-MiniLM-L6-v2` embeddings.
-3. **Schema-Aware Re-Ranking** — Composite score: `0.35·semantic + 0.30·schema + 0.20·recency + 0.15·validation`. Top-2 patterns are injected into the LLM prompt as templates.
+results/
+  ota_evaluation_results.json       Paper Table 2/3 OTA results
+  evaluation_summary.json           RGOTA 28-task benchmark summary
+  plain_llm_evaluation_summary.json Plain LLM baseline summary
+  grammar_evaluation_summary.json   Grammar baseline summary
+  template_evaluation_summary.json  Template baseline summary
 
-The LLM (`gpt-4o-2024-08-06`) then adapts the retrieved template to the user's request, preserving all safety-critical fields. The output is validated against the schema and safety rules; errors are fed back for corrective re-prompting.
+metrics_ota-main/
+  Baseline OTA framework metrics and generated comparison graphs
 
----
-
-## Results
-
-Evaluated on 18 OTA deployment test cases across 6 ECU types and 5 ASIL safety classes:
-
-| Metric | Value |
-|---|---|
-| Success Rate | 94.44% |
-| ASIL Safety Compliance | 84.62% |
-| Rollback Coverage | 84.62% |
-| Avg Latency | ~4.2 s |
-
-Compared against grammar-based (GR), template-based (TP), and plain-LLM (PL) baselines on a 28-task benchmark:
-
-| | Validity | Completeness | Extensibility |
-|---|---|---|---|
-| AEGIS (Ours) | 85.71% | 80.95% | 100% |
-| Plain LLM | 92.86% | 87.50% | 100% |
-| Grammar-Based | 82.14% | 90.14% | 88.24% |
-| Template-Based | 67.86% | 96.48% | 76.47% |
-
----
-
-## Project Structure
-
-```
-aegis/
-├── src/
-│   ├── agent.py                 # AEGIS agent — three-stage retrieval + LLM generation
-│   ├── knowledge_base.py        # Knowledge base, retrieval pipeline, re-ranking
-│   ├── ota_metrics_evaluator.py # Benchmark evaluation and metrics
-│   ├── ota_test_dataset.py      # 18-case OTA test dataset
-│   ├── dataset_generator.py     # 28-task DSL benchmark dataset
-│   ├── dsl_generator.py         # DSL generation utilities
-│   └── schema.py                # Schema definitions
-│
-├── data/
-│   ├── ota_knowledge_base.json       # 19-pattern retrieval database
-│   └── automotive_ota_patterns.json  # Source OTA patterns
-│
-├── results/
-│   ├── ota_evaluation_results.json       # 18-case OTA benchmark results
-│   ├── evaluation_summary.json           # 28-task AEGIS results
-│   ├── plain_llm_evaluation_summary.json # 28-task PL baseline
-│   ├── grammar_evaluation_summary.json   # 28-task GR baseline
-│   └── template_evaluation_summary.json  # 28-task TP baseline
-│
-├── metrics_ota-main/            # Comparison metrics vs TUF, Balena, RAUC, etc.
-├── scripts/                     # Knowledge base utilities
-├── tests/                       # Test and verification scripts
-├── run_ota_benchmark.py         # Main benchmark runner
-├── main.py                      # Interactive entry point
-├── requirements.txt
-└── .env.example
+scripts/
+  verify_ota_setup.py      Environment/setup checks
+  convert_ota_patterns.py  Knowledge-base conversion utility
 ```
 
----
+## Environment
 
-## Quick Start
+Use a virtual environment in the repository root:
 
 ```bash
-# 1. Clone and set up environment
-git clone https://github.com/SK1PPR/aegis
-cd aegis
-python -m venv venv
-source venv/bin/activate        # Windows: venv\Scripts\activate
-pip install -r requirements.txt
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+```
 
-# 2. Configure API key
+For a quick offline smoke test, no OpenAI key is required:
+
+```bash
+RGOTA_EMBEDDING_BACKEND=hash python tests/quick_test.py
+```
+
+The default retrieval backend uses `sentence-transformers/all-MiniLM-L6-v2`, matching the paper. The `hash` backend is only for deterministic local smoke tests when model downloads or caches are unavailable.
+
+## Run The Live Benchmark
+
+The full benchmark calls OpenAI and requires an API key:
+
+```bash
 cp .env.example .env
-# Edit .env and add your OPENAI_API_KEY
-
-# 3. Run the benchmark
+# edit .env and set OPENAI_API_KEY
 python run_ota_benchmark.py
 ```
 
-Results are saved to `results/ota_evaluation_results.json`.
+The live run rewrites:
 
----
-
-## Knowledge Base
-
-19 validated OTA deployment patterns covering:
-- **ECU types**: Infotainment, ADAS, Powertrain, Telematics, Gateway, Body Control
-- **Safety classes**: QM, ASIL-A, ASIL-B, ASIL-C, ASIL-D
-- **Deployment modes**: A/B, Dual-bank, Delta, Full, Single-bank
-- **Regions**: US, EU, CN, GLOBAL
-
-To add new patterns, edit `data/automotive_ota_patterns.json` and run:
-```bash
-python scripts/convert_ota_patterns.py
-python tests/verify_ota_patterns.py
+```text
+data/ota_test_dataset.json
+results/ota_evaluation_results.json
+results/nl2dsl_quick_metrics.json
+metrics_ota-main/nl2dsl_agent_metrics.json
 ```
 
----
+Because live LLM calls can vary by model/service behavior and latency, the checked-in `results/` files are the archived artifact values used for the paper tables.
 
-## Requirements
+## Results
 
-- Python 3.9+
-- OpenAI API key (`gpt-4o-2024-08-06`)
-- See `requirements.txt` for full dependency list
+OTA benchmark on 18 deployment cases across six ECU types and five safety classes:
+
+| Category | Count | Success | Precision | Recall |
+|---|---:|---:|---:|---:|
+| Single ECU | 2 | 100.00% | 62.72% | 75.00% |
+| Multi-ECU | 2 | 100.00% | 31.74% | 43.33% |
+| Safety Critical | 2 | 100.00% | 32.14% | 40.00% |
+| Infotainment | 2 | 100.00% | 61.05% | 65.00% |
+| ADAS | 2 | 100.00% | 31.97% | 22.17% |
+| Powertrain | 2 | 100.00% | 31.38% | 38.00% |
+| Regional | 2 | 100.00% | 61.18% | 65.00% |
+| Rollback | 2 | 50.00% | 64.29% | 84.00% |
+| Delta Update | 2 | 100.00% | 61.25% | 65.00% |
+| Overall | 18 | 94.44% | 47.71% | 53.59% |
+
+28-task baseline comparison:
+
+| Approach | Validity | Completeness | Extensibility | Grammar Pass | Latency |
+|---|---:|---:|---:|---:|---:|
+| Template-Based | 67.86% | 96.48% | 76.47% | 78.57% | 0.002s |
+| Grammar-Based | 82.14% | 90.14% | 88.24% | 92.86% | 0.002s |
+| Plain LLM | 92.86% | 87.50% | 100.00% | 100.00% | 1.534s |
+| RGOTA | 85.71% | 80.95% | 100.00% | 100.00% | 4.423s |
+
+## Knowledge Base Maintenance
+
+To update OTA patterns:
+
+```bash
+python scripts/convert_ota_patterns.py
+RGOTA_EMBEDDING_BACKEND=hash python tests/verify_ota_patterns.py
+```
+
+Use the default embedding backend for final experiments, and use `RGOTA_EMBEDDING_BACKEND=hash` for quick offline checks.

@@ -1,7 +1,8 @@
-"""Generates container-lang DSL code from structured JSON."""
+"""Generate the baseline container DSL from structured JSON."""
 
-from schema import Program, Service, PortMapping, EnvVar
 from typing import List
+
+from .schema import Program, Service, PortMapping, EnvVar
 
 
 def format_env_value(value: str) -> str:

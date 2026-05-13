@@ -4,7 +4,15 @@ Verify that OTA patterns are properly loaded into the knowledge base
 and can be retrieved correctly.
 """
 
-from knowledge_base import (
+import os
+import sys
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(PROJECT_ROOT))
+os.environ.setdefault("RGOTA_EMBEDDING_BACKEND", "hash")
+
+from src.knowledge_base import (
     OTAKnowledgeBase,
     ECUType,
     SafetyClass,

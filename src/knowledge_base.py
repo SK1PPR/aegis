@@ -6,6 +6,8 @@ OTA-specific knowledge base with three-stage retrieval pipeline:
 """
 
 import json
+import hashlib
+import os
 import re
 from pathlib import Path
 from typing import List, Dict, Optional, Set, Tuple
@@ -42,6 +44,27 @@ class ECUType(Enum):
     BODY_CONTROL = "body_control"
     TELEMATICS = "telematics"
     GATEWAY = "gateway"
+
+
+class HashingEncoder:
+    """Small deterministic encoder used for offline smoke tests."""
+
+    def __init__(self, dimensions: int = 384):
+        self.dimensions = dimensions
+
+    def encode(self, texts):
+        vectors = []
+        for text in texts:
+            vector = np.zeros(self.dimensions, dtype=float)
+            tokens = re.findall(r"[a-z0-9_]+", text.lower())
+            for token in tokens:
+                digest = hashlib.sha256(token.encode("utf-8")).digest()
+                index = int.from_bytes(digest[:4], "big") % self.dimensions
+                sign = 1 if digest[4] % 2 == 0 else -1
+                vector[index] += sign
+            norm = np.linalg.norm(vector)
+            vectors.append(vector / norm if norm else vector)
+        return np.array(vectors)
 
 
 @dataclass
@@ -107,17 +130,30 @@ class OTAKnowledgeBase:
     Stage 3: Schema-Aware Re-Ranking (structural + version)
     """
     
-    def __init__(self, kb_path: str = None):
+    def __init__(self, kb_path: str = None, embedding_backend: str = None):
         # Default to data directory
         if kb_path is None:
             kb_path = Path(__file__).parent.parent / "data" / "ota_knowledge_base.json"
         self.kb_path = Path(kb_path)
         self.patterns: List[OTADeploymentPattern] = []
         self.embeddings = None
-        self.encoder = SentenceTransformer('all-MiniLM-L6-v2')
+        self.embedding_backend = embedding_backend or os.getenv("RGOTA_EMBEDDING_BACKEND", "sentence-transformers")
+        self.encoder = self._build_encoder(self.embedding_backend)
 
         self._load_knowledge_base()
         self._compute_embeddings()
+
+    def _build_encoder(self, backend: str):
+        """Build the semantic encoder.
+
+        The paper uses all-MiniLM-L6-v2. The hash backend is deterministic and
+        dependency-light for offline smoke tests; it is not used for reported metrics.
+        """
+        if backend == "hash":
+            return HashingEncoder()
+        if backend != "sentence-transformers":
+            raise ValueError(f"Unsupported embedding backend: {backend}")
+        return SentenceTransformer('all-MiniLM-L6-v2')
     
     def _load_knowledge_base(self):
         """Load OTA patterns from JSON"""
